@@ -8,13 +8,13 @@ router.get('/', customerController.getAllCustomer);
 // getDetailData
 router.get('/:id', customerController.getDetailCustomer);
 
-// create data
+// // create data
 router.post('/', customerController.createCustomer);
 
-// updateData
+// // updateData
 router.put('/:id', customerController.updateCustomer);
 
-// delete data
+// // delete data
 router.delete('/:id', customerController.deleteCustomer);
 
 

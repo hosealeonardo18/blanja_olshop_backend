@@ -8,13 +8,13 @@ router.get('/', productController.getAllProduct);
 // getDetailData
 router.get('/:id', productController.getDetailProduct);
 
-// create data
+// // create data
 router.post('/', productController.createProduct);
 
-// updateData
+// // updateData
 router.put('/:id', productController.updateProduct);
 
-// delete data
+// // delete data
 router.delete('/:id', productController.deleteProduct);
 
 module.exports = router;

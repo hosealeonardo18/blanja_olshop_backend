@@ -8,13 +8,13 @@ router.get('/', sellerController.getAllSeller);
 // getDetailData
 router.get('/:id', sellerController.getDetailSeller);
 
-// create data
+// // create data
 router.post('/', sellerController.createSeller);
 
-// updateData
+// // updateData
 router.put('/:id', sellerController.updateSeller);
 
-// delete data
+// // delete data
 router.delete('/:id', sellerController.deleteSeller);
 
 module.exports = router;
