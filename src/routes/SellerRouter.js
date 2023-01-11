@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const sellerController = require('../controller/SellerController');
+const {
+    validate
+} = require('../middleware/common')
 
 // getData
 router.get('/', sellerController.getAllSeller);
