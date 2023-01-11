@@ -8,19 +8,13 @@ const {
 const customerController = {
     getAllCustomer: async (req, res) => {
         try {
-            const {
-                rowCount
-            } = await customerModel.getAllCustomer();
+            let searchParams = req.query.search || "";
+            let sortBy = req.query.sortBy || "name";
+            let sort = req.query.sort || "ASC";
 
-            if (!rowCount) {
-                res.json({
-                    message: "Product Not Found"
-                })
-            }
+            const result = await customerModel.getAllCustomer(searchParams, sortBy, sort)
 
-            customerModel.getAllCustomer().then(result => {
-                helperResponse.response(res, result.rows, 200, "Get Data Succesfully!");
-            })
+            helperResponse.response(res, result.rows, 200, "Get Data Customer Success!");
 
         } catch (error) {
             console.log(error);
@@ -112,25 +106,25 @@ const customerController = {
     },
 
     deleteCustomer: async (req, res) => {
-        try {
-            const id = Number(req.params.id);
 
-            const {
-                rowCount
-            } = await customerModel.findId(id);
+        const id = Number(req.params.id);
 
-            if (!rowCount) {
-                res.json({
-                    message: "Data Customer Not Found!"
-                })
-            }
+        const {
+            rowCount
+        } = await customerModel.findId(id);
 
-            customerModel.deleteCustomer(id).then(result => {
-                helperResponse.response(res, result.rows, 200, "Data Customer Deleted!")
+        if (!rowCount) {
+            res.json({
+                message: "Data Customer Not Found!"
             })
-        } catch (error) {
-            console.log(error);
         }
+
+        customerModel.deleteCustomer(id).then(result => {
+            helperResponse.response(res, result.rows, 200, "Data Customer Deleted!")
+        }).catch(error => {
+            res.send(error)
+        })
+
 
     }
 }

@@ -1,8 +1,8 @@
 const pool = require('../config/db');
 
 
-const getAllCustomer = () => {
-    return pool.query(`SELECT * FROM customer`)
+const getAllCustomer = (searchParams, sortBy, sort) => {
+    return pool.query(`SELECT * FROM customer WHERE name LIKE '%${searchParams}%' ORDER BY ${sortBy} ${sort}`)
 }
 
 const getDetailCustomer = (id) => {

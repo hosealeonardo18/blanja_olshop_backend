@@ -5,30 +5,18 @@ const {
 } = require('pg');
 
 let categoriesController = {
+
     getAllCategories: async (req, res) => {
         try {
-            const {
-                rowCount
-            } = await categoriesModel.selectAllCategories();
+            let searchParams = req.query.search || "";
+            let sortBy = req.query.sortBy || "name";
+            let sort = req.query.sort || "ASC";
+            const result = await categoriesModel.selectAllCategories(searchParams, sortBy, sort);
 
-            if (!rowCount) {
-                res.json({
-                    message: "Product Not Found"
-                })
-            }
-
-            categoriesModel.selectAllCategories().then(result => {
-                helperResponse.response(res, result.rows, 200, "Get Data Success!")
-            }).catch(error => {
-                res.send(error)
-            })
-
-
-
+            helperResponse.response(res, result.rows, 200, "Get Data Categories Success!")
         } catch (error) {
             console.log(error);
         }
-
     },
 
     getDetailCategories: async (req, res) => {
@@ -62,7 +50,6 @@ let categoriesController = {
         categoriesModel.createCategories(data).then(result => {
             helperResponse.response(res, result.rowCount, 201, "Categories Created!")
         }).catch(error => res.send(error))
-
     },
 
     updateCategories: async (req, res) => {

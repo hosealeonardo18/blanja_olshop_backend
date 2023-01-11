@@ -3,21 +3,18 @@ const helperResponse = require('../helper/common');
 
 const productController = {
     getAllProduct: async (req, res) => {
-        const {
-            rowCount
-        } = await productModel.getAllProduct();
+        try {
+            let searchParams = req.query.search || "";
+            let sortBy = req.query.sortBy || "name";
+            let sort = req.query.sort || 'ASC';
 
-        if (!rowCount) {
-            res.json({
-                message: "Product Not Found"
-            })
+            const result = await productModel.getAllProduct(searchParams, sortBy, sort)
+
+            helperResponse.response(res, result.rows, 200, "Get Product Success!")
+        } catch (error) {
+            console.log(error);
         }
 
-        productModel.getAllProduct().then(result => {
-            helperResponse.response(res, result.rows, 200, "Get Data Success!")
-        }).catch(error => {
-            res.send(error);
-        })
     },
 
     getDetailProduct: async (req, res) => {

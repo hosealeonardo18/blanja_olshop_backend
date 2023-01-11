@@ -3,21 +3,17 @@ const helperResonse = require('../helper/common');
 
 const sellerController = {
     getAllSeller: async (req, res) => {
-        const {
-            rowCount
-        } = await sellerModel.getAllSeller();
+        try {
+            let searchParams = req.query.search || "";
+            let sortBy = req.query.sortBy || "name";
+            let sort = req.query.sort || 'ASC';
 
-        if (!rowCount) {
-            res.json({
-                message: "Product Not Found"
-            })
+            const result = await sellerModel.getAllSeller(searchParams, sortBy, sort);
+
+            helperResonse.response(res, result.rows, 200, "Get Data Seller Success!");
+        } catch (error) {
+            console.log(error);
         }
-
-        sellerModel.getAllSeller().then(result => {
-            helperResonse.response(res, result.rows, 200, "Get Data Success!");
-        }).catch(error => {
-            res.send(error)
-        })
     },
 
     getDetailSeller: async (req, res) => {
@@ -42,33 +38,31 @@ const sellerController = {
     },
 
     createSeller: async (req, res) => {
-        try {
-            const {
-                name,
-                alamat,
-                gender,
-                tanggal_lahir,
-                email,
-                password
-            } = req.body;
 
-            const data = {
-                name,
-                alamat,
-                gender,
-                tanggal_lahir,
-                email,
-                password
-            }
+        const {
+            name,
+            alamat,
+            gender,
+            tanggal_lahir,
+            email,
+            password
+        } = req.body;
 
-            sellerModel.createSeller(data).then(result => {
-                helperResonse.response(res, result.rows, 201, "Data Seller Created")
-            }).catch(error => {
-                res.send(error)
-            })
-        } catch (error) {
-
+        const data = {
+            name,
+            alamat,
+            gender,
+            tanggal_lahir,
+            email,
+            password
         }
+
+        sellerModel.createSeller(data).then(result => {
+            helperResonse.response(res, result.rows, 201, "Data Seller Created")
+        }).catch(error => {
+            res.send(error)
+        })
+
     },
 
     updateSeller: async (req, res) => {
@@ -110,26 +104,24 @@ const sellerController = {
     },
 
     deleteSeller: async (req, res) => {
-        try {
-            const id = Number(req.params.id);
-            const {
-                rowCount
-            } = await sellerModel.findId(id)
 
-            if (!rowCount) {
-                res.json({
-                    message: "Data Seller Not Found"
-                });
-            }
+        const id = Number(req.params.id);
+        const {
+            rowCount
+        } = await sellerModel.findId(id)
 
-            sellerModel.deleteSeller(id).then(result => {
-                helperResonse.response(res, result.rows, 201, "Data Seller Deteled!");
-            }).catch(error => {
-                res.send(error)
-            })
-        } catch (error) {
-            console.log(error);
+        if (!rowCount) {
+            res.json({
+                message: "Data Seller Not Found"
+            });
         }
+
+        sellerModel.deleteSeller(id).then(result => {
+            helperResonse.response(res, result.rows, 201, "Data Seller Deteled!");
+        }).catch(error => {
+            res.send(error)
+        })
+
 
     }
 }
