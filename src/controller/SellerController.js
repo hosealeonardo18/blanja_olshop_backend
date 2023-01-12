@@ -4,13 +4,29 @@ const helperResonse = require('../helper/common');
 const sellerController = {
     getAllSeller: async (req, res) => {
         try {
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 5;
+            const offset = (page - 1) * limit;
             let searchParams = req.query.search || "";
             let sortBy = req.query.sortBy || "name";
             let sort = req.query.sort || 'ASC';
 
-            const result = await sellerModel.getAllSeller(searchParams, sortBy, sort);
+            const result = await sellerModel.getAllSeller(searchParams, sortBy, sort, limit, offset);
 
-            helperResonse.response(res, result.rows, 200, "Get Data Seller Success!");
+            const {
+                rows: [count]
+            } = await sellerModel.countData();
+
+            const totalData = parseInt(count.count);
+            const totalPage = Math.ceil(totalData / limit)
+            const pagination = {
+                currentPage: page,
+                limit: limit,
+                totalData: totalData,
+                totalPage: totalPage
+            }
+
+            helperResonse.response(res, result.rows, 200, "Get Data Seller Success!", pagination);
         } catch (error) {
             console.log(error);
         }
@@ -24,7 +40,7 @@ const sellerController = {
         } = await sellerModel.findId(id);
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Data Seller Not Found!"
             })
         }
@@ -41,18 +57,18 @@ const sellerController = {
 
         const {
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         } = req.body;
 
         const data = {
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         }
@@ -69,9 +85,9 @@ const sellerController = {
         const id = Number(req.params.id);
         const {
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         } = req.body
@@ -81,7 +97,7 @@ const sellerController = {
         } = await sellerModel.findId(id)
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Seller Not Found!"
             });
         }
@@ -89,9 +105,9 @@ const sellerController = {
         const data = {
             id,
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         }
@@ -111,7 +127,7 @@ const sellerController = {
         } = await sellerModel.findId(id)
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Data Seller Not Found"
             });
         }

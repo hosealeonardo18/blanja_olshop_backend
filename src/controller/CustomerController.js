@@ -8,14 +8,29 @@ const {
 const customerController = {
     getAllCustomer: async (req, res) => {
         try {
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 5;
+            const offset = (page - 1) * limit;
             let searchParams = req.query.search || "";
             let sortBy = req.query.sortBy || "name";
             let sort = req.query.sort || "ASC";
 
-            const result = await customerModel.getAllCustomer(searchParams, sortBy, sort)
+            const result = await customerModel.getAllCustomer(searchParams, sortBy, sort, limit, offset)
 
-            helperResponse.response(res, result.rows, 200, "Get Data Customer Success!");
+            const {
+                rows: [count]
+            } = await customerModel.countData();
 
+            const totalData = parseInt(count.count);
+            const totalPage = Math.ceil(totalData / limit);
+            const pagination = {
+                currentPage: page,
+                limit: limit,
+                totalData: totalData,
+                totalPage: totalPage
+            }
+
+            helperResponse.response(res, result.rows, 200, "Get Data Customer Success!", pagination);
         } catch (error) {
             console.log(error);
         }
@@ -44,9 +59,9 @@ const customerController = {
     createCustomer: (req, res) => {
         const {
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         } = req.body
@@ -54,9 +69,9 @@ const customerController = {
 
         const data = {
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         }
@@ -71,9 +86,9 @@ const customerController = {
         const id = Number(req.params.id);
         const {
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         } = req.body;
@@ -83,7 +98,7 @@ const customerController = {
         } = await customerModel.findId(id);
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Customer Not Found!"
             });
         };
@@ -91,9 +106,9 @@ const customerController = {
         const data = {
             id,
             name,
-            alamat,
+            address,
             gender,
-            tanggal_lahir,
+            date_of_birthday,
             email,
             password
         };
@@ -114,7 +129,7 @@ const customerController = {
         } = await customerModel.findId(id);
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Data Customer Not Found!"
             })
         }

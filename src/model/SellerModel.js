@@ -1,7 +1,7 @@
 const Pool = require('../config/db');
 
-const getAllSeller = (searchParams, sortBy, sort) => {
-    return Pool.query(`SELECT * FROM seller WHERE name LIKE '%${searchParams}%' ORDER BY ${sortBy} ${sort} `)
+const getAllSeller = (searchParams, sortBy, sort, limit, offset) => {
+    return Pool.query(`SELECT * FROM seller WHERE name LIKE '%${searchParams}%' ORDER BY ${sortBy} ${sort} LIMIT ${limit} OFFSET ${offset}`)
 }
 
 const getDetailSeller = (id) => {
@@ -11,29 +11,29 @@ const getDetailSeller = (id) => {
 const createSeller = (data) => {
     const {
         name,
-        alamat,
+        address,
         gender,
-        tanggal_lahir,
+        date_of_birthday,
         email,
         password
     } = data;
 
-    return Pool.query(`INSERT INTO seller(name , alamat, gender, tanggal_lahir , email, password)
-    VALUES ('${name}', '${alamat}', '${gender}', '${tanggal_lahir}', '${email}', '${password}')`)
+    return Pool.query(`INSERT INTO seller(name , address, gender, date_of_birthday , email, password)
+    VALUES ('${name}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}')`)
 }
 
 const updateSeller = (data) => {
     const {
         id,
         name,
-        alamat,
+        address,
         gender,
-        tanggal_lahir,
+        date_of_birthday,
         email,
         password
     } = data
 
-    return Pool.query(`UPDATE seller SET name='${name}', alamat='${alamat}', gender='${gender}', tanggal_lahir='${tanggal_lahir}', email='${email}', password='${password}' WHERE id_seller=${id}`)
+    return Pool.query(`UPDATE seller SET name='${name}', address='${address}', gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}' WHERE id_seller=${id}`)
 }
 
 const deleteSeller = (id) => {
@@ -52,6 +52,10 @@ const findId = (id) => {
     });
 };
 
+const countData = () => {
+    return Pool.query(`SELECT COUNT(*) FROM seller`);
+}
+
 
 module.exports = {
     getAllSeller,
@@ -59,5 +63,6 @@ module.exports = {
     createSeller,
     updateSeller,
     deleteSeller,
-    findId
+    findId,
+    countData
 }

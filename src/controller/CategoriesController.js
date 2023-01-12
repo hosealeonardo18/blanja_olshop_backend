@@ -8,12 +8,29 @@ let categoriesController = {
 
     getAllCategories: async (req, res) => {
         try {
+            let page = Number(req.query.page) || 1;
+            let limit = Number(req.query.limit) || 5;
+            let offset = (page - 1) * limit;
             let searchParams = req.query.search || "";
             let sortBy = req.query.sortBy || "name";
             let sort = req.query.sort || "ASC";
-            const result = await categoriesModel.selectAllCategories(searchParams, sortBy, sort);
 
-            helperResponse.response(res, result.rows, 200, "Get Data Categories Success!")
+            const result = await categoriesModel.selectAllCategories(searchParams, sortBy, sort, limit, offset);
+
+            const {
+                rows: [count]
+            } = await categoriesModel.countData();
+
+            const totalData = parseInt(count.count);
+            const totalPage = Math.ceil(totalData / limit);
+            const pagination = {
+                currentPage: page,
+                limit: limit,
+                totalData: totalData,
+                totalPage: totalPage
+            }
+
+            helperResponse.response(res, result.rows, 200, "Get Data Categories Success!", pagination)
         } catch (error) {
             console.log(error);
         }
@@ -26,7 +43,7 @@ let categoriesController = {
         } = await categoriesModel.selectDetailCategories(id)
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: `Data Not Found!`
             })
         }
@@ -86,7 +103,7 @@ let categoriesController = {
             } = await categoriesModel.findId(id);
 
             if (!rowCount) {
-                res.json({
+                return res.json({
                     message: "Data Not Found!"
                 })
             }

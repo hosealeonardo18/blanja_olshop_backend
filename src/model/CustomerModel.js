@@ -1,49 +1,49 @@
-const pool = require('../config/db');
+const Pool = require('../config/db');
 
 
-const getAllCustomer = (searchParams, sortBy, sort) => {
-    return pool.query(`SELECT * FROM customer WHERE name LIKE '%${searchParams}%' ORDER BY ${sortBy} ${sort}`)
+const getAllCustomer = (searchParams, sortBy, sort, limit, offset) => {
+    return Pool.query(`SELECT * FROM customer WHERE name LIKE '%${searchParams}%' ORDER BY ${sortBy} ${sort} LIMIT ${limit} OFFSET ${offset}`)
 }
 
 const getDetailCustomer = (id) => {
-    return pool.query(`SELECT * FROM customer WHERE id_customer=${id}`)
+    return Pool.query(`SELECT * FROM customer WHERE id_customer=${id}`)
 }
 
 const createCustomer = (data) => {
     const {
         name,
-        alamat,
+        address,
         gender,
-        tanggal_lahir,
+        date_of_birthday,
         email,
         password
     } = data
 
-    return pool.query(`INSERT INTO customer(name , alamat, gender, tanggal_lahir , email, password)
-    VALUES ('${name}', '${alamat}', '${gender}', '${tanggal_lahir}', '${email}', '${password}')`);
+    return Pool.query(`INSERT INTO customer(name , address, gender, date_of_birthday , email, password)
+    VALUES ('${name}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}')`);
 }
 
 const updateCustomer = (data) => {
     const {
         id,
         name,
-        alamat,
+        address,
         gender,
-        tanggal_lahir,
+        date_of_birthday,
         email,
         password
     } = data;
 
-    return pool.query(`UPDATE customer SET name='${name}', alamat='${alamat}', gender='${gender}', tanggal_lahir='${tanggal_lahir}', email='${email}', password='${password}' WHERE id_customer=${id};`)
+    return Pool.query(`UPDATE customer SET name='${name}', address='${address}', gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}' WHERE id_customer=${id};`)
 }
 
 const deleteCustomer = (id) => {
-    return pool.query(`DELETE FROM customer WHERE id_customer=${id}`)
+    return Pool.query(`DELETE FROM customer WHERE id_customer=${id}`)
 }
 
 const findId = (id) => {
     return new Promise((resolve, reject) => {
-        pool.query(`SELECT id_customer FROM customer WHERE id_customer=${id}`, (error, result) => {
+        Pool.query(`SELECT id_customer FROM customer WHERE id_customer=${id}`, (error, result) => {
             if (!error) {
                 resolve(result);
             } else {
@@ -53,6 +53,9 @@ const findId = (id) => {
     });
 };
 
+const countData = () => {
+    return Pool.query(`SELECT COUNT(*) FROM customer`);
+}
 
 module.exports = {
     getAllCustomer,
@@ -60,6 +63,6 @@ module.exports = {
     createCustomer,
     updateCustomer,
     deleteCustomer,
-    findId
-
+    findId,
+    countData
 }

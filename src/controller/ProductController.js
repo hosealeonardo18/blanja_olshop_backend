@@ -4,13 +4,28 @@ const helperResponse = require('../helper/common');
 const productController = {
     getAllProduct: async (req, res) => {
         try {
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 5;
+            const offset = (page - 1) * limit;
             let searchParams = req.query.search || "";
             let sortBy = req.query.sortBy || "name";
             let sort = req.query.sort || 'ASC';
 
-            const result = await productModel.getAllProduct(searchParams, sortBy, sort)
+            const result = await productModel.getAllProduct(searchParams, sortBy, sort, limit, offset)
+            const {
+                rows: [count]
+            } = await productModel.countData();
 
-            helperResponse.response(res, result.rows, 200, "Get Product Success!")
+            const totalData = parseInt(count.count);
+            const totalPage = Math.ceil(totalData / limit);
+            const pagination = {
+                currentPage: page,
+                limit: limit,
+                totalData: totalData,
+                totalPage: totalPage
+            };
+
+            helperResponse.response(res, result.rows, 200, "Get Product Success!", pagination)
         } catch (error) {
             console.log(error);
         }
@@ -25,7 +40,7 @@ const productController = {
         } = await productModel.findId(id);
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Data Product Not Found!"
             })
         }
@@ -46,9 +61,9 @@ const productController = {
             size,
             color,
             stock,
-            deskripsi,
+            description,
             rating,
-            ulasan
+            review
         } = req.body
 
         const data = {
@@ -59,9 +74,9 @@ const productController = {
             size,
             color,
             stock,
-            deskripsi,
+            description,
             rating,
-            ulasan
+            review
         }
 
         productModel.createProduct(data).then(result => {
@@ -78,7 +93,7 @@ const productController = {
         } = await productModel.findId(id)
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Data Product Not Found!"
             });
         }
@@ -91,9 +106,9 @@ const productController = {
             size,
             color,
             stock,
-            deskripsi,
+            description,
             rating,
-            ulasan
+            review
         } = req.body
 
         const data = {
@@ -105,9 +120,9 @@ const productController = {
             size,
             color,
             stock,
-            deskripsi,
+            description,
             rating,
-            ulasan
+            review
         }
 
         productModel.updateProduct(data).then(result => {
@@ -126,7 +141,7 @@ const productController = {
         } = await productModel.findId(id);
 
         if (!rowCount) {
-            res.json({
+            return res.json({
                 message: "Data Product Not Found"
             })
         }
