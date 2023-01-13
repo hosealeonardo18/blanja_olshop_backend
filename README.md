@@ -35,16 +35,15 @@
 
 [Documentation Postman](https://documenter.postman.com/preview/24895506-272b67f9-f306-4527-b5ee-63d8942fe480?environment=&versionTag=latest&apiName=CURRENT&version=latest&documentationLayout=classic-double-column&right-sidebar=303030&top-bar=FFFFFF&highlight=EF5B25)
 
-
-## Authors
-
-- [@hosealeonardo18](https://github.com/hosealeonardo18)
+## Accsess API
 
 - [API Product](https://blanjaolshopbackend-production.up.railway.app/product)
 - [API Seller](https://blanjaolshopbackend-production.up.railway.app/seller)
 - [API Customer](https://blanjaolshopbackend-production.up.railway.app/customer)
 - [API Categories](https://blanjaolshopbackend-production.up.railway.app/categories)
 
+## Authors
+- [@hosealeonardo18](https://github.com/hosealeonardo18)
 
 ## Installation
 
