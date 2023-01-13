@@ -1,5 +1,5 @@
 CREATE DATABASE online_shop;
-
+CREATE TYPE enum AS enum('L','P')
 CREATE TABLE categories (
     id_categories serial PRIMARY KEY NOT NULL,
     name varchar(255) NOT NULL
