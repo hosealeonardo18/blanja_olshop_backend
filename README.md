@@ -40,6 +40,11 @@
 
 - [@hosealeonardo18](https://github.com/hosealeonardo18)
 
+- [API Product](https://blanjaolshopbackend-production.up.railway.app/product)
+- [API Seller](https://blanjaolshopbackend-production.up.railway.app/seller)
+- [API Customer](https://blanjaolshopbackend-production.up.railway.app/customer)
+- [API Categories](https://blanjaolshopbackend-production.up.railway.app/categories)
+
 
 ## Installation
 
