@@ -3,7 +3,6 @@
 
 ## Third Party Module
 
-
 | Third Party       |  NPM Install                 |
 | :--------         | :----------------------------|
 | Express           | `npm i express`              |
@@ -35,25 +34,43 @@
 
 [Documentation Postman](https://documenter.postman.com/preview/24895506-272b67f9-f306-4527-b5ee-63d8942fe480?environment=&versionTag=latest&apiName=CURRENT&version=latest&documentationLayout=classic-double-column&right-sidebar=303030&top-bar=FFFFFF&highlight=EF5B25)
 
-## Accsess API
+
+## Deployment
+
+| Deployment                            |  Database                                    |
+| :----------------------------------   | :----------------------------------------    |
+| [Railway](https://railway.app/)       | [postgreSQL](https://railway.app/)           |
+| [Cyclic](https://www.cyclic.sh/)      | [ElephantSQL](https://www.elephantsql.com/)  |
+
+
+## Accsess API Deploy by Railway
 
 - [API Product](https://blanjaolshopbackend-production.up.railway.app/product)
 - [API Seller](https://blanjaolshopbackend-production.up.railway.app/seller)
 - [API Customer](https://blanjaolshopbackend-production.up.railway.app/customer)
 - [API Categories](https://blanjaolshopbackend-production.up.railway.app/categories)
 
+
+## Access API Deploy by Cyclic
+- [API Product](https://wide-eyed-gilet-wasp.cyclic.app/product)
+- [API Seller](https://wide-eyed-gilet-wasp.cyclic.app/seller)
+- [API Customer](https://wide-eyed-gilet-wasp.cyclic.app/customer)
+- [API Categories](https://wide-eyed-gilet-wasp.cyclic.app/categories)
+
+
 ## Authors
 - [@hosealeonardo18](https://github.com/hosealeonardo18)
 
-## Installation
-
+## Installation Node_Modules
 ```bash
   npm install
-  npm run server-start
 ```
 
+## Running Server
+```bash
+   npm run server-start
+```
 ## Debug
-
 ```bash
   npm run lint
 ```

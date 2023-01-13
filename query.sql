@@ -73,9 +73,9 @@ VALUES ('Siti', 'Pelumpang, Jakarta Utara', 'P', '1980-05-12', 'siti@gmail.com',
 
 
 INSERT INTO product(id_seller, id_categories, name, price , size, color, stock, description,rating, review)
-VALUES ('1', '5', 'High Heels Yongki', 125000, 37, 'Black', 20, 'Barang original Mantap', 4, 'Barang sesuai dengan Deskripsi'), 
-('2', '4', 'G-Shock Pria', 350000, null, 'Silver Metal', 30, 'Barang original', 5, 'Ori banget barangnya, fastrespon seller'),
-('3', '5', 'GUEST', 1500000, null, 'Merah', 10, 'Terbuat dari Kuliah buaya Asli', 4, 'mantap barangnya');
+VALUES ('1', '1', 'High Heels Yongki', 125000, 37, 'Black', 20, 'Barang original Mantap', 4, 'Barang sesuai dengan Deskripsi'), 
+('2', '2', 'G-Shock Pria', 350000, null, 'Silver Metal', 30, 'Barang original', 5, 'Ori banget barangnya, fastrespon seller'),
+('3', '3', 'GUEST', 1500000, null, 'Merah', 10, 'Terbuat dari Kuliah buaya Asli', 4, 'mantap barangnya');
 
 
 
