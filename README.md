@@ -39,7 +39,7 @@
 
 | Deployment                            |  Database                                    |
 | :----------------------------------   | :----------------------------------------    |
-| [Railway](https://railway.app/)       | [postgreSQL](https://railway.app/)           |
+| [Railway](https://railway.app/)       | [postgreSQL](https://www.postgresql.org/)    |
 | [Cyclic](https://www.cyclic.sh/)      | [ElephantSQL](https://www.elephantsql.com/)  |
 
 
