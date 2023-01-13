@@ -130,8 +130,6 @@ const productController = {
         }).catch(error => {
             res.send(error)
         })
-
-
     },
 
     deleteProduct: async (req, res) => {

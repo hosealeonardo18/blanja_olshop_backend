@@ -1,9 +1,5 @@
 const customerModel = require('../model/CustomerModel');
 const helperResponse = require('../helper/common');
-const {
-    Pool
-} = require('pg');
-
 
 const customerController = {
     getAllCustomer: async (req, res) => {
@@ -101,7 +97,7 @@ const customerController = {
             return res.json({
                 message: "Customer Not Found!"
             });
-        };
+        }
 
         const data = {
             id,

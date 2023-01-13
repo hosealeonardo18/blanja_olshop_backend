@@ -12,10 +12,10 @@ router.get('/', sellerController.getAllSeller);
 router.get('/:id', sellerController.getDetailSeller);
 
 // // create data
-router.post('/', sellerController.createSeller);
+router.post('/', validate, sellerController.createSeller);
 
 // // updateData
-router.put('/:id', sellerController.updateSeller);
+router.put('/:id', validate, sellerController.updateSeller);
 
 // // delete data
 router.delete('/:id', sellerController.deleteSeller);

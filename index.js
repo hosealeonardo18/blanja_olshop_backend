@@ -23,7 +23,7 @@ app.all('*', (req, res, next) => {
     next(new createError.NotFound())
 })
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     const messageError = err.message || "internal server error"
     const statusCode = err.status || 500
 

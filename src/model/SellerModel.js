@@ -47,7 +47,7 @@ const findId = (id) => {
                 resolve(result);
             } else {
                 reject(error);
-            };
+            }
         });
     });
 };

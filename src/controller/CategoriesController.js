@@ -1,8 +1,5 @@
 const categoriesModel = require('../model/CategoriesModel');
 const helperResponse = require('../helper/common');
-const {
-    Pool
-} = require('pg');
 
 let categoriesController = {
 
