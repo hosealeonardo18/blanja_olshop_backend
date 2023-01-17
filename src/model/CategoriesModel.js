@@ -5,16 +5,17 @@ let selectAllCategories = (search, sortBy, sort, limit, offset) => {
 }
 
 const selectDetailCategories = (id) => {
-    return Pool.query(`SELECT * FROM categories WHERE id_categories=${id};`)
+    return Pool.query(`SELECT * FROM categories WHERE id_categories='${id}'`)
 }
 
 const createCategories = (data) => {
     const {
+        id,
         name
     } = data
 
-    return Pool.query(`INSERT INTO categories(name)
-    VALUES ('${name}')`);
+    return Pool.query(`INSERT INTO categories(id_categories, name)
+    VALUES ('${id}','${name}')`);
 }
 
 const updateCategories = (data) => {
@@ -23,16 +24,28 @@ const updateCategories = (data) => {
         name
     } = data;
 
-    return Pool.query(`UPDATE categories SET name='${name}' WHERE id_categories=${id}`);
+    return Pool.query(`UPDATE categories SET name='${name}' WHERE id_categories='${id}'`);
 }
 
 const deleteCategories = (id) => {
-    return Pool.query(`DELETE FROM categories WHERE id_categories = ${id}`);
+    return Pool.query(`DELETE FROM categories WHERE id_categories = '${id}'`);
 }
 
 const findId = (id) => {
     return new Promise((resolve, reject) => {
-        Pool.query(`SELECT id_categories FROM categories WHERE id_categories=${id}`, (error, result) => {
+        Pool.query(`SELECT id_categories FROM categories WHERE id_categories='${id}'`, (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                reject(error);
+            }
+        });
+    });
+};
+
+const findEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        Pool.query(`SELECT * FROM users WHERE email='${email}'`, (error, result) => {
             if (!error) {
                 resolve(result);
             } else {
@@ -53,5 +66,6 @@ module.exports = {
     updateCategories,
     deleteCategories,
     findId,
-    countData
+    countData,
+    findEmail
 };

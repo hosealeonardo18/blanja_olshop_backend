@@ -1,7 +1,7 @@
 const Pool = require('../config/db');
 
 const getAllProduct = (searchParams, sortBy, sort, limit, offset) => {
-    return Pool.query(`SELECT product.*, seller.name AS seller_name, categories.name AS categories_name  
+    return Pool.query(`SELECT product.*, seller.fullname AS seller_name, categories.name AS categories_name  
     FROM product 
     INNER JOIN seller ON seller.id_seller = product.id_seller
     INNER JOIN categories ON categories.id_categories = product.id_categories 
@@ -10,16 +10,17 @@ const getAllProduct = (searchParams, sortBy, sort, limit, offset) => {
 }
 
 const getDetailProduct = (id) => {
-    return Pool.query(`SELECT product.*, seller.name AS seller_name, categories.name AS categories_name  
+    return Pool.query(`SELECT product.*, seller.fullname AS seller_name, categories.name AS categories_name  
     FROM product 
     INNER JOIN seller ON seller.id_seller = product.id_seller
     INNER JOIN categories ON categories.id_categories = product.id_categories 
-    WHERE id_product=${id}`)
+    WHERE id_product='${id}'`)
     // return Pool.query(`SELECT * FROM product WHERE id_product=${id}`)
 }
 
 const createProduct = (data) => {
     const {
+        id,
         id_seller,
         id_categories,
         name,
@@ -29,11 +30,12 @@ const createProduct = (data) => {
         stock,
         description,
         rating,
-        review
+        review,
+        photo
     } = data;
 
-    return Pool.query(`INSERT INTO product(id_seller, id_categories, name, price , size, color, stock, description,rating, review)
-    VALUES ('${id_seller}', '${id_categories}', '${name}', ${price}, '${size}', '${color}', ${stock}, '${description}', ${rating}, '${review}')`)
+    return Pool.query(`INSERT INTO product(id_product, id_seller, id_categories, name, price , size, color, stock, description,rating, review, photo)
+    VALUES ('${id}','${id_seller}', '${id_categories}', '${name}', ${price}, '${size}', '${color}', ${stock}, '${description}', ${rating}, '${review}', '${photo}')`)
 }
 
 const updateProduct = (data) => {
@@ -48,19 +50,20 @@ const updateProduct = (data) => {
         stock,
         description,
         rating,
-        review
+        review,
+        photo
     } = data
 
-    return Pool.query(`UPDATE product SET id_seller = ${id_seller}, id_categories = ${id_categories}, name = '${name}', price = ${price} , size = '${size}', color = '${color}', stock = ${stock}, description = '${description}', rating = ${rating}, review = '${review}' WHERE id_product = ${id};`)
+    return Pool.query(`UPDATE product SET id_seller = '${id_seller}', id_categories = '${id_categories}', name = '${name}', price = ${price} , size = '${size}', color = '${color}', stock = ${stock}, description = '${description}', rating = ${rating}, review = '${review}', photo = '${photo}' WHERE id_product = '${id}'`)
 }
 
 const deleteProduct = (id) => {
-    return Pool.query(`DELETE FROM product WHERE id_product = ${id}`)
+    return Pool.query(`DELETE FROM product WHERE id_product = '${id}'`)
 }
 
 const findId = (id) => {
     return new Promise((resolve, reject) => {
-        Pool.query(`SELECT id_product FROM product WHERE id_product=${id}`, (error, result) => {
+        Pool.query(`SELECT id_product FROM product WHERE id_product='${id}'`, (error, result) => {
             if (!error) {
                 resolve(result);
             } else {
@@ -69,6 +72,7 @@ const findId = (id) => {
         });
     });
 };
+
 
 const countData = () => {
     return Pool.query(`SELECT COUNT(*) FROM product`)

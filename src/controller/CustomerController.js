@@ -1,5 +1,10 @@
 const customerModel = require('../model/CustomerModel');
 const helperResponse = require('../helper/common');
+const bcrypt = require('bcryptjs');
+const {
+    v4: uuidv4
+} = require('uuid');
+
 
 const customerController = {
     getAllCustomer: async (req, res) => {
@@ -8,7 +13,7 @@ const customerController = {
             const limit = Number(req.query.limit) || 5;
             const offset = (page - 1) * limit;
             let searchParams = req.query.search || "";
-            let sortBy = req.query.sortBy || "name";
+            let sortBy = req.query.sortBy || "fullname";
             let sort = req.query.sort || "ASC";
 
             const result = await customerModel.getAllCustomer(searchParams, sortBy, sort, limit, offset)
@@ -33,7 +38,7 @@ const customerController = {
     },
 
     getDetailCustomer: async (req, res) => {
-        const id = Number(req.params.id)
+        const id = req.params.id
 
         const {
             rowCount
@@ -52,41 +57,59 @@ const customerController = {
         })
     },
 
-    createCustomer: (req, res) => {
+    createCustomer: async (req, res) => {
         const {
-            name,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password,
+            role
         } = req.body
 
+        const {
+            rowCount
+        } = await customerModel.findEmail(email);
+
+        if (rowCount) {
+            res.json({
+                message: "Email already use!"
+            })
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        const passHash = bcrypt.hashSync(password, salt);
+        const id = uuidv4();
 
         const data = {
-            name,
+            id,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password: passHash,
+            role
         }
+
         customerModel.createCustomer(data).then(result => {
-            helperResponse.response(res, result.rowCount, 201, "Data Customer Created!");
+            helperResponse.response(res, result.rows, 201, "Data Customer Created!");
         }).catch(error => {
             res.send(error)
         })
     },
 
     updateCustomer: async (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
         const {
-            name,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password,
+            role
         } = req.body;
 
         const {
@@ -101,12 +124,13 @@ const customerController = {
 
         const data = {
             id,
-            name,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password,
+            role
         };
 
         customerModel.updateCustomer(data).then(result => {
@@ -118,7 +142,7 @@ const customerController = {
 
     deleteCustomer: async (req, res) => {
 
-        const id = Number(req.params.id);
+        const id = req.params.id;
 
         const {
             rowCount

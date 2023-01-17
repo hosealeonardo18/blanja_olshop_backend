@@ -1,5 +1,10 @@
 const sellerModel = require('../model/SellerModel');
 const helperResonse = require('../helper/common');
+const bcrypt = require('bcryptjs');
+const {
+    v4: uuidv4
+} = require('uuid');
+
 
 const sellerController = {
     getAllSeller: async (req, res) => {
@@ -33,7 +38,7 @@ const sellerController = {
     },
 
     getDetailSeller: async (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
 
         const {
             rowCount
@@ -54,23 +59,39 @@ const sellerController = {
     },
 
     createSeller: async (req, res) => {
-
         const {
-            name,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password,
+            role
         } = req.body;
 
+        const {
+            rowCount
+        } = await sellerModel.findEmail(email);
+
+        if (rowCount) {
+            res.json({
+                message: "Email already use!"
+            })
+        }
+
+        const salt = bcrypt.genSaltSync(10);
+        const passHash = bcrypt.hashSync(password, salt);
+        const id = uuidv4();
+
         const data = {
-            name,
+            id,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password: passHash,
+            role
         }
 
         sellerModel.createSeller(data).then(result => {
@@ -82,15 +103,24 @@ const sellerController = {
     },
 
     updateSeller: async (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
         const {
-            name,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password,
+            role
         } = req.body
+
+        console.log(fullname,
+            address,
+            gender,
+            date_of_birthday,
+            email,
+            password,
+            role);
 
         const {
             rowCount
@@ -104,12 +134,13 @@ const sellerController = {
 
         const data = {
             id,
-            name,
+            fullname,
             address,
             gender,
             date_of_birthday,
             email,
-            password
+            password,
+            role
         }
 
         sellerModel.updateSeller(data).then(result => {
@@ -121,7 +152,7 @@ const sellerController = {
 
     deleteSeller: async (req, res) => {
 
-        const id = Number(req.params.id);
+        const id = req.params.id;
         const {
             rowCount
         } = await sellerModel.findId(id)

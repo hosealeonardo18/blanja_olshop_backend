@@ -3,21 +3,17 @@ const router = express.Router();
 const productController = require('../controller/ProductController');
 const {
     validate
-} = require('../middleware/common')
+} = require('../middleware/common');
+const {
+    protect
+} = require('../middleware/AuthMiddleware');
 
-// getData
-router.get('/', productController.getAllProduct);
+const upload = require('../middleware/MulterMiddleware');
 
-// getDetailData
-router.get('/:id', productController.getDetailProduct);
-
-// // create data
-router.post('/', validate, productController.createProduct);
-
-// // updateData
-router.put('/:id', validate, productController.updateProduct);
-
-// // delete data
-router.delete('/:id', productController.deleteProduct);
+router.get('/', protect, productController.getAllProduct);
+router.get('/:id', protect, productController.getDetailProduct);
+router.post('/', upload, productController.createProduct);
+router.put('/:id', protect, validate, productController.updateProduct);
+router.delete('/:id', protect, productController.deleteProduct);
 
 module.exports = router;

@@ -1,5 +1,8 @@
 const productModel = require('../model/ProductModel');
 const helperResponse = require('../helper/common');
+const {
+    v4: uuidv4
+} = require('uuid');
 
 const productController = {
     getAllProduct: async (req, res) => {
@@ -12,6 +15,7 @@ const productController = {
             let sort = req.query.sort || 'ASC';
 
             const result = await productModel.getAllProduct(searchParams, sortBy, sort, limit, offset)
+
             const {
                 rows: [count]
             } = await productModel.countData();
@@ -33,7 +37,7 @@ const productController = {
     },
 
     getDetailProduct: async (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
 
         const {
             rowCount
@@ -53,6 +57,10 @@ const productController = {
     },
 
     createProduct: (req, res) => {
+        const photo = req.file.filename
+        const PORT = process.env.PORT || 5000;
+        const HOST = process.env.HOST || "localhost"
+
         const {
             id_seller,
             id_categories,
@@ -66,7 +74,10 @@ const productController = {
             review
         } = req.body
 
+        const id = uuidv4();
+
         const data = {
+            id,
             id_seller,
             id_categories,
             name,
@@ -76,7 +87,8 @@ const productController = {
             stock,
             description,
             rating,
-            review
+            review,
+            photo
         }
 
         productModel.createProduct(data).then(result => {
@@ -87,7 +99,10 @@ const productController = {
     },
 
     updateProduct: async (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
+        const photo = req.file.filename
+        const PORT = process.env.PORT || 5000;
+        const HOST = process.env.HOST || "localhost"
         const {
             rowCount
         } = await productModel.findId(id)
@@ -122,7 +137,8 @@ const productController = {
             stock,
             description,
             rating,
-            review
+            review,
+            photo
         }
 
         productModel.updateProduct(data).then(result => {
@@ -133,7 +149,7 @@ const productController = {
     },
 
     deleteProduct: async (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
         const {
             rowCount
         } = await productModel.findId(id);

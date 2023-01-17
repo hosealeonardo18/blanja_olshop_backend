@@ -1,48 +1,51 @@
 const Pool = require('../config/db');
 
 const getAllSeller = (searchParams, sortBy, sort, limit, offset) => {
-    return Pool.query(`SELECT * FROM seller WHERE name LIKE '%${searchParams}%' ORDER BY ${sortBy} ${sort} LIMIT ${limit} OFFSET ${offset}`)
+    return Pool.query(`SELECT * FROM seller WHERE fullname LIKE '%${searchParams}%' ORDER BY ${sortBy} ${sort} LIMIT ${limit} OFFSET ${offset}`)
 }
 
 const getDetailSeller = (id) => {
-    return Pool.query(`SELECT * FROM seller WHERE id_seller=${id};`)
+    return Pool.query(`SELECT * FROM seller WHERE id_seller='${id}';`)
 }
 
 const createSeller = (data) => {
     const {
-        name,
+        id,
+        fullname,
         address,
         gender,
         date_of_birthday,
         email,
-        password
+        password,
+        role
     } = data;
 
-    return Pool.query(`INSERT INTO seller(name , address, gender, date_of_birthday , email, password)
-    VALUES ('${name}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}')`)
+    return Pool.query(`INSERT INTO seller(id_seller, fullname , address, gender, date_of_birthday , email, password, role)
+    VALUES ('${id}', '${fullname}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}', '${role}')`)
 }
 
 const updateSeller = (data) => {
     const {
         id,
-        name,
+        fullname,
         address,
         gender,
         date_of_birthday,
         email,
-        password
+        password,
+        role
     } = data
 
-    return Pool.query(`UPDATE seller SET name='${name}', address='${address}', gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}' WHERE id_seller=${id}`)
+    return Pool.query(`UPDATE seller SET fullname='${fullname}', address='${address}', gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}', role='${role}' WHERE id_seller='${id}'`)
 }
 
 const deleteSeller = (id) => {
-    return Pool.query(`DELETE FROM seller WHERE id_seller = ${id}`)
+    return Pool.query(`DELETE FROM seller WHERE id_seller ='${id}'`)
 }
 
 const findId = (id) => {
     return new Promise((resolve, reject) => {
-        Pool.query(`SELECT id_seller FROM seller WHERE id_seller=${id}`, (error, result) => {
+        Pool.query(`SELECT id_seller FROM seller WHERE id_seller='${id}'`, (error, result) => {
             if (!error) {
                 resolve(result);
             } else {
@@ -56,6 +59,17 @@ const countData = () => {
     return Pool.query(`SELECT COUNT(*) FROM seller`);
 }
 
+const findEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        Pool.query(`SELECT * FROM seller WHERE email='${email}'`, (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                reject(error);
+            }
+        });
+    });
+};
 
 module.exports = {
     getAllSeller,
@@ -64,5 +78,6 @@ module.exports = {
     updateSeller,
     deleteSeller,
     findId,
-    countData
+    countData,
+    findEmail
 }

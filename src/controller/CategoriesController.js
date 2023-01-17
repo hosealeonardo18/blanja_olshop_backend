@@ -1,5 +1,8 @@
 const categoriesModel = require('../model/CategoriesModel');
 const helperResponse = require('../helper/common');
+const {
+    v4: uuidv4
+} = require('uuid');
 
 let categoriesController = {
 
@@ -34,7 +37,8 @@ let categoriesController = {
     },
 
     getDetailCategories: async (req, res) => {
-        const id = Number(req.params.id);
+        const id = req.params.id;
+
         const {
             rowCount
         } = await categoriesModel.selectDetailCategories(id)
@@ -57,7 +61,10 @@ let categoriesController = {
             name
         } = req.body;
 
+        const id = uuidv4();
+
         let data = {
+            id,
             name
         }
 
@@ -67,7 +74,7 @@ let categoriesController = {
     },
 
     updateCategories: async (req, res) => {
-        const id = Number(req.params.id)
+        const id = req.params.id
         const {
             name
         } = req.body;
@@ -94,7 +101,8 @@ let categoriesController = {
 
     deteleCategories: async (req, res) => {
         try {
-            const id = Number(req.params.id);
+            const id = req.params.id;
+
             const {
                 rowCount
             } = await categoriesModel.findId(id);

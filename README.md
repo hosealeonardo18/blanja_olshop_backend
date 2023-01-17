@@ -43,7 +43,6 @@
 | [Cyclic](https://www.cyclic.sh/)      | [ElephantSQL](https://www.elephantsql.com/)  |
 
 
-## Accsess API Deploy by Railway
 
 - [API Product](https://blanjaolshopbackend-production.up.railway.app/product)
 - [API Seller](https://blanjaolshopbackend-production.up.railway.app/seller)
