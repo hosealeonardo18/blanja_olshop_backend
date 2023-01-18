@@ -9,22 +9,6 @@ const getDetailCustomer = (id) => {
     return Pool.query(`SELECT * FROM customer WHERE id_customer='${id}'`)
 }
 
-const createCustomer = (data) => {
-    const {
-        id,
-        fullname,
-        address,
-        gender,
-        date_of_birthday,
-        email,
-        password,
-        role
-    } = data
-
-    return Pool.query(`INSERT INTO customer(id_customer, fullname , address, gender, date_of_birthday , email, password, role)
-    VALUES ('${id}','${fullname}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}', '${role}')`);
-}
-
 const updateCustomer = (data) => {
     const {
         id,
@@ -60,6 +44,23 @@ const countData = () => {
     return Pool.query(`SELECT COUNT(*) FROM customer`);
 }
 
+// auth
+const registerCustomer = (data) => {
+    const {
+        id,
+        fullname,
+        address,
+        gender,
+        date_of_birthday,
+        email,
+        password,
+        role
+    } = data
+
+    return Pool.query(`INSERT INTO customer(id_customer, fullname , address, gender, date_of_birthday , email, password, role)
+    VALUES ('${id}','${fullname}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}', '${role}')`);
+}
+
 const findEmail = (email) => {
     return new Promise((resolve, reject) => {
         Pool.query(`SELECT * FROM customer WHERE email='${email}'`, (error, result) => {
@@ -75,10 +76,10 @@ const findEmail = (email) => {
 module.exports = {
     getAllCustomer,
     getDetailCustomer,
-    createCustomer,
     updateCustomer,
     deleteCustomer,
     findId,
     countData,
-    findEmail
+    findEmail,
+    registerCustomer
 }

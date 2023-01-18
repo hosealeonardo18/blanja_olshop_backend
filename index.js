@@ -8,17 +8,26 @@ const xss = require('helmet')
 const app = express();
 const port = process.env.PORT;
 const mainRouter = require('./src/routes/IndexRouter')
+const bodyParser = require('body-parser')
 
 // body parse express 
 app.use(express.json());
+app.use(express.urlencoded({
+    extended: true
+}))
 app.use(cors())
 app.use(morgan('dev'))
 
+
 // router utama
+// app.post('/product/', (req, res) => {
+//     console.log(req);
+// })
 app.use('/', mainRouter);
 
 app.use(helmet())
 app.use(xss())
+app.use('/img', express.static('src/upload/product'))
 app.all('*', (req, res, next) => {
     next(new createError.NotFound())
 })
@@ -33,6 +42,8 @@ app.use((err, req, res, next) => {
 
     next()
 })
+
+
 
 
 app.listen(port, () => {

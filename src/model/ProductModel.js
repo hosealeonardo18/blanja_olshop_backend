@@ -78,6 +78,7 @@ const countData = () => {
     return Pool.query(`SELECT COUNT(*) FROM product`)
 }
 
+
 module.exports = {
     getAllProduct,
     getDetailProduct,

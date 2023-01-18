@@ -3,7 +3,7 @@ const validate = (req, res, next) => {
     const {
         name,
         stock,
-        price
+        price,
     } = req.body
     try {
         if (name === '' || stock === '' || price === '') throw new Error('kosong')

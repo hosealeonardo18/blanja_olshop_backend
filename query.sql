@@ -120,10 +120,10 @@ VALUES ('Siti', 'Pelumpang, Jakarta Utara', 'P', '1980-05-12', 'siti@gmail.com',
         ('Ibenk', 'Ciracas, Jakarta Timur', 'L', '1988-09-15', 'ibenk@gmail.com','test123', 'seller');
 
 
-INSERT INTO product(id_seller, id_categories, fullname, price , size, color, stock, description,rating, review)
-VALUES ('1', '1', 'High Heels Yongki', 125000, 37, 'Black', 20, 'Barang original Mantap', 4, 'Barang sesuai dengan Deskripsi'), 
+INSERT INTO product(id_product, id_seller, id_categories, fullname, price , size, color, stock, description,rating, review, photo)
+VALUES ('77570790-88b6-4f43-b93c-9645c8c64eb8', '77570790-88b6-4f43-b93c-9645c8c64eb8', '1e602d64-a101-4cee-933e-6464e70b7bda','High Heels Yongki', 125000, 37, 'Black', 20, 'Barang original Mantap', 4, 'Barang sesuai dengan Deskripsi'), 
 ('2', '2', 'G-Shock Pria', 350000, null, 'Silver Metal', 30, 'Barang original', 5, 'Ori banget barangnya, fastrespon seller'),
-('3', '3', 'GUEST', 1500000, null, 'Merah', 10, 'Terbuat dari Kuliah buaya Asli', 4, 'mantap barangnya');
+('3', '3', 'GUEST', 1500000, null, 'Merah', 10, 'Terbuat dari Kuliah buaya Asli', 4, 'mantap barangnya', '');
 
 INSERT INTO cart(id_cart, qty, totalPrice,  create_date, id_product, id_seller)
 VALUES (1, 2, 400000 , '2023-01-14', 4, 3);

@@ -1,4 +1,5 @@
 const productModel = require('../model/ProductModel');
+const sellerModel = require('../model/SellerModel');
 const helperResponse = require('../helper/common');
 const {
     v4: uuidv4
@@ -56,13 +57,25 @@ const productController = {
         })
     },
 
-    createProduct: (req, res) => {
+    createProduct: async (req, res) => {
         const photo = req.file.filename
         const PORT = process.env.PORT || 5000;
         const HOST = process.env.HOST || "localhost"
 
+        const role = req.payload.role;
+
+        if (role !== 'seller') {
+            return res.json({
+                message: "Sorry, you are not a seller!"
+            });
+        };
+
+        const email = req.payload.email;
         const {
-            id_seller,
+            rows: [seller]
+        } = await sellerModel.findEmail(email);
+
+        const {
             id_categories,
             name,
             price,
@@ -78,7 +91,7 @@ const productController = {
 
         const data = {
             id,
-            id_seller,
+            id_seller: seller.id_seller,
             id_categories,
             name,
             price,
@@ -88,7 +101,7 @@ const productController = {
             description,
             rating,
             review,
-            photo
+            photo: `http://${HOST}:${PORT}/img/${photo}`
         }
 
         productModel.createProduct(data).then(result => {
@@ -103,6 +116,15 @@ const productController = {
         const photo = req.file.filename
         const PORT = process.env.PORT || 5000;
         const HOST = process.env.HOST || "localhost"
+
+        const role = req.payload.role
+
+        if (role !== 'seller') {
+            return res.json({
+                message: "Sorry, you are not a seller!"
+            })
+        }
+
         const {
             rowCount
         } = await productModel.findId(id)
@@ -138,7 +160,7 @@ const productController = {
             description,
             rating,
             review,
-            photo
+            photo: `http://${HOST}:${PORT}/img/${photo}`
         }
 
         productModel.updateProduct(data).then(result => {
@@ -150,6 +172,15 @@ const productController = {
 
     deleteProduct: async (req, res) => {
         const id = req.params.id;
+
+        const role = req.payload.role
+
+        if (role !== 'seller') {
+            return res.json({
+                message: "Sorry, you are not a seller!"
+            })
+        }
+
         const {
             rowCount
         } = await productModel.findId(id);

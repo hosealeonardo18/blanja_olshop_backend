@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const sellerController = require('../controller/SellerController');
-
+const {
+  protect
+} = require('../middleware/AuthMiddleware');
 
 // getData
 router.get('/', sellerController.getAllSeller);
-
-// getDetailData
 router.get('/:id', sellerController.getDetailSeller);
-
-// // create data
-router.post('/', sellerController.createSeller);
-
-// // updateData
 router.put('/:id', sellerController.updateSeller);
-
-// // delete data
 router.delete('/:id', sellerController.deleteSeller);
+
+// auth
+router.post('/auth/register', sellerController.registerSeller);
+router.post('/auth/login', sellerController.loginSeller);
+router.post('/auth/refresh-token', sellerController.refreshToken);
+router.get('/auth/profile-seller', protect, sellerController.profileSeller);
+
 
 module.exports = router;
