@@ -8,7 +8,6 @@ const xss = require('helmet')
 const app = express();
 const port = process.env.PORT;
 const mainRouter = require('./src/routes/IndexRouter')
-const bodyParser = require('body-parser')
 
 // body parse express 
 app.use(express.json());

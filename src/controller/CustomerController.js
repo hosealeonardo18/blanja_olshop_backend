@@ -59,49 +59,6 @@ const customerController = {
         })
     },
 
-    createCustomer: async (req, res) => {
-        const {
-            fullname,
-            address,
-            gender,
-            date_of_birthday,
-            email,
-            password,
-            role
-        } = req.body
-
-        const {
-            rowCount
-        } = await customerModel.findEmail(email);
-
-        if (rowCount) {
-            res.json({
-                message: "Email already use!"
-            })
-        }
-
-        const salt = bcrypt.genSaltSync(10);
-        const passHash = bcrypt.hashSync(password, salt);
-        const id = uuidv4();
-
-        const data = {
-            id,
-            fullname,
-            address,
-            gender,
-            date_of_birthday,
-            email,
-            password: passHash,
-            role
-        }
-
-        customerModel.createCustomer(data).then(result => {
-            helperResponse.response(res, result.rows, 201, "Register Customer Success!");
-        }).catch(error => {
-            res.send(error)
-        })
-    },
-
     updateCustomer: async (req, res) => {
         const id = req.params.id;
         const {
@@ -111,7 +68,6 @@ const customerController = {
             date_of_birthday,
             email,
             password,
-            role
         } = req.body;
 
         const {
@@ -124,6 +80,9 @@ const customerController = {
             });
         }
 
+        const salt = bcrypt.genSaltSync(10);
+        const passHash = bcrypt.hashSync(password, salt);
+
         const data = {
             id,
             fullname,
@@ -131,8 +90,8 @@ const customerController = {
             gender,
             date_of_birthday,
             email,
-            password,
-            role
+            password: passHash,
+            role: 'customer'
         };
 
         customerModel.updateCustomer(data).then(result => {

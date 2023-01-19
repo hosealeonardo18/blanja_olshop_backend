@@ -69,16 +69,8 @@ const sellerController = {
             date_of_birthday,
             email,
             password,
-            role
-        } = req.body
 
-        console.log(fullname,
-            address,
-            gender,
-            date_of_birthday,
-            email,
-            password,
-            role);
+        } = req.body
 
         const {
             rowCount
@@ -90,6 +82,9 @@ const sellerController = {
             });
         }
 
+        const salt = bcrypt.genSaltSync(10);
+        const passHash = bcrypt.hashSync(password, salt);
+
         const data = {
             id,
             fullname,
@@ -97,8 +92,8 @@ const sellerController = {
             gender,
             date_of_birthday,
             email,
-            password,
-            role
+            password: passHash,
+            role: 'seller'
         }
 
         sellerModel.updateSeller(data).then(result => {
@@ -185,14 +180,14 @@ const sellerController = {
                 return res.json({
                     message: "Email Not Register!"
                 });
-            };
+            }
 
             const validatePassword = bcrypt.compareSync(password, seller.password);
             if (!validatePassword) {
                 return res.json({
                     message: "Password Incorrect!"
                 });
-            };
+            }
 
             delete seller.password;
             delete seller.address;

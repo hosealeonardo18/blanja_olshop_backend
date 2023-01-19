@@ -78,6 +78,10 @@ const countData = () => {
     return Pool.query(`SELECT COUNT(*) FROM product`)
 }
 
+const findAll = () => {
+    return Pool.query(`SELECT * FROM product`)
+}
+
 
 module.exports = {
     getAllProduct,
@@ -86,5 +90,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     findId,
-    countData
+    countData,
+    findAll
 }

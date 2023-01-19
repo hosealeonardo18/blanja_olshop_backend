@@ -59,6 +59,7 @@ const productController = {
 
     createProduct: async (req, res) => {
         const photo = req.file.filename
+
         const PORT = process.env.PORT || 5000;
         const HOST = process.env.HOST || "localhost"
 
@@ -68,7 +69,7 @@ const productController = {
             return res.json({
                 message: "Sorry, you are not a seller!"
             });
-        };
+        }
 
         const email = req.payload.email;
         const {
@@ -135,8 +136,12 @@ const productController = {
             });
         }
 
+        const email = req.payload.email;
         const {
-            id_seller,
+            rows: [seller]
+        } = await sellerModel.findEmail(email);
+
+        const {
             id_categories,
             name,
             price,
@@ -150,7 +155,7 @@ const productController = {
 
         const data = {
             id,
-            id_seller,
+            id_seller: seller.id_seller,
             id_categories,
             name,
             price,
