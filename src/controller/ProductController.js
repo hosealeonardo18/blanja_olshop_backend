@@ -1,207 +1,158 @@
 const productModel = require('../model/ProductModel');
 const sellerModel = require('../model/SellerModel');
 const helperResponse = require('../helper/common');
-const {
-    v4: uuidv4
-} = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 const productController = {
-    getAllProduct: async (req, res) => {
-        try {
-            const page = Number(req.query.page) || 1;
-            const limit = Number(req.query.limit) || 5;
-            const offset = (page - 1) * limit;
-            let searchParams = req.query.search || "";
-            let sortBy = req.query.sortBy || "name";
-            let sort = req.query.sort || 'ASC';
+	getAllProduct: async (req, res) => {
+		try {
+			const page = Number(req.query.page) || 1;
+			const limit = Number(req.query.limit) || 5;
+			const offset = (page - 1) * limit;
+			let searchParams = req.query.search || '';
+			let sortBy = req.query.sortBy || 'name';
+			let sort = req.query.sort || 'ASC';
 
-            const result = await productModel.getAllProduct(searchParams, sortBy, sort, limit, offset)
+			const result = await productModel.getAllProduct(searchParams, sortBy, sort, limit, offset);
 
-            const {
-                rows: [count]
-            } = await productModel.countData();
+			const { rows: [count] } = await productModel.countData();
 
-            const totalData = parseInt(count.count);
-            const totalPage = Math.ceil(totalData / limit);
-            const pagination = {
-                currentPage: page,
-                limit: limit,
-                totalData: totalData,
-                totalPage: totalPage
-            };
+			const totalData = parseInt(count.count);
+			const totalPage = Math.ceil(totalData / limit);
+			const pagination = {
+				currentPage: page,
+				limit: limit,
+				totalData: totalData,
+				totalPage: totalPage,
+			};
 
-            helperResponse.response(res, result.rows, 200, "Get Product Success!", pagination)
-        } catch (error) {
-            console.log(error);
-        }
+			helperResponse.response(res, result.rows, 200, 'Get Product Success!', pagination);
+		} catch (error) {
+			console.log(error);
+		}
+	},
 
-    },
+	getDetailProduct: async (req, res) => {
+		const id = req.params.id;
+		const { rowCount } = await productModel.findId(id);
 
-    getDetailProduct: async (req, res) => {
-        const id = req.params.id;
+		if (!rowCount) return res.json({ message: 'Data Product Not Found!' });
 
-        const {
-            rowCount
-        } = await productModel.findId(id);
+		productModel.getDetailProduct(id).then((result) => {
+			helperResponse.response(res, result.rows, 200, 'Get Data By Id Success!');
+		}).catch((error) => {
+			res.send(error);
+		});
+	},
 
-        if (!rowCount) {
-            return res.json({
-                message: "Data Product Not Found!"
-            })
-        }
+	createProduct: async (req, res) => {
+		const photo = req.file.filename;
+		const PORT = process.env.PORT || 5000;
+		const HOST = process.env.HOST || 'localhost';
+		const role = req.payload.role;
 
-        productModel.getDetailProduct(id).then(result => {
-            helperResponse.response(res, result.rows, 200, "Get Data By Id Success!");
-        }).catch(error => {
-            res.send(error);
-        })
-    },
+		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
 
-    createProduct: async (req, res) => {
-        const photo = req.file.filename
+		const email = req.payload.email;
+		const { rows: [seller] } = await sellerModel.findEmail(email);
 
-        const PORT = process.env.PORT || 5000;
-        const HOST = process.env.HOST || "localhost"
+		const {
+			id_categories,
+			name,
+			price,
+			size,
+			color,
+			stock,
+			description,
+			rating,
+			review } = req.body;
 
-        const role = req.payload.role;
+		const id = uuidv4();
 
-        if (role !== 'seller') {
-            return res.json({
-                message: "Sorry, you are not a seller!"
-            });
-        }
+		const data = {
+			id,
+			id_seller: seller.id_seller,
+			id_categories,
+			name,
+			price,
+			size,
+			color,
+			stock,
+			description,
+			rating,
+			review,
+			photo: `http://${HOST}:${PORT}/img/${photo}`
+		};
 
-        const email = req.payload.email;
-        const {
-            rows: [seller]
-        } = await sellerModel.findEmail(email);
+		productModel.createProduct(data).then((result) => {
+			helperResponse.response(res, result.rows, 201, 'Data Product Created!');
+		}).catch((error) => {
+			res.send(error);
+		});
+	},
 
-        const {
-            id_categories,
-            name,
-            price,
-            size,
-            color,
-            stock,
-            description,
-            rating,
-            review
-        } = req.body
+	updateProduct: async (req, res) => {
+		const id = req.params.id;
+		const photo = req.file.filename;
+		const PORT = process.env.PORT || 5000;
+		const HOST = process.env.HOST || 'localhost';
 
-        const id = uuidv4();
+		const role = req.payload.role;
 
-        const data = {
-            id,
-            id_seller: seller.id_seller,
-            id_categories,
-            name,
-            price,
-            size,
-            color,
-            stock,
-            description,
-            rating,
-            review,
-            photo: `http://${HOST}:${PORT}/img/${photo}`
-        }
+		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
 
-        productModel.createProduct(data).then(result => {
-            helperResponse.response(res, result.rows, 201, "Data Product Created!");
-        }).catch(error => {
-            res.send(error);
-        })
-    },
+		const { rowCount } = await productModel.findId(id);
 
-    updateProduct: async (req, res) => {
-        const id = req.params.id;
-        const photo = req.file.filename
-        const PORT = process.env.PORT || 5000;
-        const HOST = process.env.HOST || "localhost"
+		if (!rowCount) return res.json({ message: 'Data Product Not Found!' });
 
-        const role = req.payload.role
+		const email = req.payload.email;
+		const {
+			rows: [seller],
+		} = await sellerModel.findEmail(email);
 
-        if (role !== 'seller') {
-            return res.json({
-                message: "Sorry, you are not a seller!"
-            })
-        }
+		const { id_categories, name, price, size, color, stock, description, rating, review } = req.body;
 
-        const {
-            rowCount
-        } = await productModel.findId(id)
+		const data = {
+			id,
+			id_seller: seller.id_seller,
+			id_categories,
+			name,
+			price,
+			size,
+			color,
+			stock,
+			description,
+			rating,
+			review,
+			photo: `http://${HOST}:${PORT}/img/${photo}`,
+		};
 
-        if (!rowCount) {
-            return res.json({
-                message: "Data Product Not Found!"
-            });
-        }
+		productModel
+			.updateProduct(data)
+			.then((result) => {
+				helperResponse.response(res, result.rows, 201, 'Data Product Updated!');
+			})
+			.catch((error) => {
+				res.send(error);
+			});
+	},
 
-        const email = req.payload.email;
-        const {
-            rows: [seller]
-        } = await sellerModel.findEmail(email);
+	deleteProduct: async (req, res) => {
+		const id = req.params.id;
+		const role = req.payload.role;
 
-        const {
-            id_categories,
-            name,
-            price,
-            size,
-            color,
-            stock,
-            description,
-            rating,
-            review
-        } = req.body
+		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
 
-        const data = {
-            id,
-            id_seller: seller.id_seller,
-            id_categories,
-            name,
-            price,
-            size,
-            color,
-            stock,
-            description,
-            rating,
-            review,
-            photo: `http://${HOST}:${PORT}/img/${photo}`
-        }
+		const { rowCount } = await productModel.findId(id);
+		if (!rowCount) return res.json({ message: 'Data Product Not Found' });
 
-        productModel.updateProduct(data).then(result => {
-            helperResponse.response(res, result.rows, 201, "Data Product Updated!")
-        }).catch(error => {
-            res.send(error)
-        })
-    },
 
-    deleteProduct: async (req, res) => {
-        const id = req.params.id;
-
-        const role = req.payload.role
-
-        if (role !== 'seller') {
-            return res.json({
-                message: "Sorry, you are not a seller!"
-            })
-        }
-
-        const {
-            rowCount
-        } = await productModel.findId(id);
-
-        if (!rowCount) {
-            return res.json({
-                message: "Data Product Not Found"
-            })
-        }
-
-        productModel.deleteProduct(id).then(result => {
-            helperResponse.response(res, result.rows, 200, "Product Deleted!")
-        }).catch(error => {
-            res.send(error)
-        })
-    }
-}
+		productModel.deleteProduct(id).then((result) => {
+			helperResponse.response(res, result.rows, 200, 'Product Deleted!');
+		}).catch((error) => {
+			res.send(error);
+		});
+	},
+};
 
 module.exports = productController;

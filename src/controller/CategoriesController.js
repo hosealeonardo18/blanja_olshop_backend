@@ -1,126 +1,93 @@
 const categoriesModel = require('../model/CategoriesModel');
 const helperResponse = require('../helper/common');
 const {
-    v4: uuidv4
+	v4: uuidv4
 } = require('uuid');
 
 let categoriesController = {
 
-    getAllCategories: async (req, res) => {
-        try {
-            let page = Number(req.query.page) || 1;
-            let limit = Number(req.query.limit) || 5;
-            let offset = (page - 1) * limit;
-            let searchParams = req.query.search || "";
-            let sortBy = req.query.sortBy || "name";
-            let sort = req.query.sort || "ASC";
+	getAllCategories: async (req, res) => {
+		try {
+			let page = Number(req.query.page) || 1;
+			let limit = Number(req.query.limit) || 5;
+			let offset = (page - 1) * limit;
+			let searchParams = req.query.search || "";
+			let sortBy = req.query.sortBy || "name";
+			let sort = req.query.sort || "ASC";
 
-            const result = await categoriesModel.selectAllCategories(searchParams, sortBy, sort, limit, offset);
+			const result = await categoriesModel.selectAllCategories(searchParams, sortBy, sort, limit, offset);
 
-            const {
-                rows: [count]
-            } = await categoriesModel.countData();
+			const { rows: [count] } = await categoriesModel.countData();
 
-            const totalData = parseInt(count.count);
-            const totalPage = Math.ceil(totalData / limit);
-            const pagination = {
-                currentPage: page,
-                limit: limit,
-                totalData: totalData,
-                totalPage: totalPage
-            }
+			const totalData = parseInt(count.count);
+			const totalPage = Math.ceil(totalData / limit);
+			const pagination = {
+				currentPage: page,
+				limit: limit,
+				totalData: totalData,
+				totalPage: totalPage
+			}
 
-            helperResponse.response(res, result.rows, 200, "Get Data Categories Success!", pagination)
-        } catch (error) {
-            console.log(error);
-        }
-    },
+			helperResponse.response(res, result.rows, 200, "Get Data Categories Success!", pagination)
+		} catch (error) {
+			console.log(error);
+		}
+	},
 
-    getDetailCategories: async (req, res) => {
-        const id = req.params.id;
+	getDetailCategories: async (req, res) => {
+		const id = req.params.id;
 
-        const {
-            rowCount
-        } = await categoriesModel.selectDetailCategories(id)
+		const { rowCount } = await categoriesModel.selectDetailCategories(id)
 
-        if (!rowCount) {
-            return res.json({
-                message: `Data Not Found!`
-            })
-        }
+		if (!rowCount) return res.json({ message: `Data Not Found!` })
 
-        categoriesModel.selectDetailCategories(id).then(result => {
-            helperResponse.response(res, result.rows[0], 200, "Get Data Success");
-        }).catch(error => {
-            res.send(error);
-        })
-    },
+		categoriesModel.selectDetailCategories(id).then(result => {
+			helperResponse.response(res, result.rows[0], 200, "Get Data Success");
+		}).catch(error => {
+			res.send(error);
+		})
+	},
 
-    createCategories: async (req, res) => {
-        const {
-            name
-        } = req.body;
+	createCategories: async (req, res) => {
+		const { name } = req.body;
+		const id = uuidv4();
+		let data = { id, name };
 
-        const id = uuidv4();
+		categoriesModel.createCategories(data).then(result => {
+			helperResponse.response(res, result.rowCount, 201, "Categories Created!")
+		}).catch(error => res.send(error));
+	},
 
-        let data = {
-            id,
-            name
-        }
+	updateCategories: async (req, res) => {
+		const id = req.params.id;
+		const { name } = req.body;
 
-        categoriesModel.createCategories(data).then(result => {
-            helperResponse.response(res, result.rowCount, 201, "Categories Created!")
-        }).catch(error => res.send(error))
-    },
+		const { rowCount } = await categoriesModel.findId(id);
 
-    updateCategories: async (req, res) => {
-        const id = req.params.id
-        const {
-            name
-        } = req.body;
+		if (!rowCount) return res.json({ message: 'Product Not Found!' })
 
-        const {
-            rowCount
-        } = await categoriesModel.findId(id);
+		let data = { id, name }
 
-        if (!rowCount) {
-            return res.json({
-                message: 'Product Not Found!'
-            })
-        }
+		categoriesModel.updateCategories(data).then(result => {
+			helperResponse.response(res, result.rows, 201, "Categories Updated!")
+		}).catch(error => res.send(error));
+	},
 
-        let data = {
-            id,
-            name,
-        }
+	deteleCategories: async (req, res) => {
+		try {
+			const id = req.params.id;
+			const { rowCount } = await categoriesModel.findId(id);
 
-        categoriesModel.updateCategories(data).then(result => {
-            helperResponse.response(res, result.rows, 201, "Categories Updated!")
-        }).catch(error => res.send(error));
-    },
+			if (!rowCount) return res.json({ message: "Data Not Found!" });
 
-    deteleCategories: async (req, res) => {
-        try {
-            const id = req.params.id;
+			categoriesModel.deleteCategories(id).then(result => {
+				helperResponse.response(res, result.rows, 200, "Product Deleted!")
+			})
 
-            const {
-                rowCount
-            } = await categoriesModel.findId(id);
-
-            if (!rowCount) {
-                return res.json({
-                    message: "Data Not Found!"
-                })
-            }
-
-            categoriesModel.deleteCategories(id).then(result => {
-                helperResponse.response(res, result.rows, 200, "Product Deleted!")
-            })
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
+		} catch (error) {
+			console.log(error);
+		}
+	}
 };
 
 module.exports = categoriesController;

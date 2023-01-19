@@ -14,8 +14,8 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }))
-app.use(cors())
-app.use(morgan('dev'))
+app.use(cors());
+app.use(morgan('dev'));
 
 
 // router utama
@@ -24,8 +24,8 @@ app.use(morgan('dev'))
 // })
 app.use('/', mainRouter);
 
-app.use(helmet())
-app.use(xss())
+app.use(helmet());
+app.use(xss());
 app.use('/img', express.static('src/upload/product'))
 app.all('*', (req, res, next) => {
     next(new createError.NotFound())
@@ -41,9 +41,6 @@ app.use((err, req, res, next) => {
 
     next()
 })
-
-
-
 
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
