@@ -48,7 +48,7 @@ const productController = {
 	createProduct: async (req, res) => {
 		const photo = req.file.filename;
 		const PORT = process.env.PORT || 5000;
-		const HOST = process.env.HOST || 'localhost';
+		const HOST = process.env.PGHOST || 'localhost';
 		const role = req.payload.role;
 
 		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
@@ -102,7 +102,6 @@ const productController = {
 		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
 
 		const { rowCount } = await productModel.findId(id);
-
 		if (!rowCount) return res.json({ message: 'Data Product Not Found!' });
 
 		const email = req.payload.email;
