@@ -7,7 +7,7 @@ const productController = {
 	getAllProduct: async (req, res) => {
 		try {
 			const page = Number(req.query.page) || 1;
-			const limit = Number(req.query.limit) || 5;
+			const limit = Number(req.query.limit) || 10;
 			const offset = (page - 1) * limit;
 			let searchParams = req.query.search || '';
 			let sortBy = req.query.sortBy || 'name';
@@ -47,7 +47,7 @@ const productController = {
 
 	createProduct: async (req, res) => {
 		const photo = req.file.filename;
-		const PORT = process.env.PORT || 5000;
+		const PORT = process.env.PORT || 4000;
 		const HOST = process.env.PGHOST || 'localhost';
 		const role = req.payload.role;
 
@@ -81,7 +81,7 @@ const productController = {
 			description,
 			rating,
 			review,
-			photo: `http://${HOST}:${PORT}/img/${photo}`
+			photo: `http://localhost:${PORT}/img/${photo}`
 		};
 
 		productModel.createProduct(data).then((result) => {
@@ -92,10 +92,10 @@ const productController = {
 	},
 
 	updateProduct: async (req, res) => {
-		const id = req.params.id;
 		const photo = req.file.filename;
+		const id = req.params.id;
 		const PORT = process.env.PORT || 5000;
-		const HOST = process.env.HOST || 'localhost';
+		const HOST = process.env.PGHOST || 'localhost';
 
 		const role = req.payload.role;
 
