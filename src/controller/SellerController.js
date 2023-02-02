@@ -144,10 +144,10 @@ const sellerController = {
 			const { email, password } = req.body;
 			const { rows: [seller] } = await sellerModel.findEmail(email);
 
-			if (!seller) return res.json({ message: "Email Not Register!" });
+			if (!seller) return res.status(401).json({ message: "Email Not Register!" });
 
 			const validatePassword = bcrypt.compareSync(password, seller.password);
-			if (!validatePassword) return res.json({ message: "Password Incorrect!" });
+			if (!validatePassword) return res.status(403).json({ message: "Password Incorrect!" });
 
 
 			delete seller.password;
@@ -166,7 +166,9 @@ const sellerController = {
 
 			helperResonse.response(res, seller, 201, "Login Successfull!");
 		} catch (error) {
-			console.log(error);
+			res.status(401).send({
+				message: error.message
+			})
 		}
 	},
 

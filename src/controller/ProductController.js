@@ -81,7 +81,7 @@ const productController = {
 			description,
 			rating,
 			review,
-			photo: `http://localhost:${PORT}/img/${photo}`
+			photo: `http://${HOST}:${PORT}/img/${photo}`
 		};
 
 		productModel.createProduct(data).then((result) => {
