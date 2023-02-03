@@ -49,9 +49,10 @@ const productController = {
 		const photo = req.file.filename;
 		const PORT = process.env.PORT || 4000;
 		const HOST = process.env.PGHOST || 'localhost';
+
 		const role = req.payload.role;
 
-		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
+		if (role !== 'seller') return res.status(401).json({ message: 'Sorry, you are not a seller!' });
 
 		const email = req.payload.email;
 		const { rows: [seller] } = await sellerModel.findEmail(email);
@@ -64,8 +65,7 @@ const productController = {
 			color,
 			stock,
 			description,
-			rating,
-			review } = req.body;
+		} = req.body;
 
 		const id = uuidv4();
 
@@ -79,20 +79,21 @@ const productController = {
 			color,
 			stock,
 			description,
-			rating,
-			review,
+			rating: 0,
+			review: "",
 			photo: `http://${HOST}:${PORT}/img/${photo}`
 		};
 
 		productModel.createProduct(data).then((result) => {
 			helperResponse.response(res, result.rows, 201, 'Data Product Created!');
 		}).catch((error) => {
+			console.log(error);
 			res.send(error);
 		});
 	},
 
 	updateProduct: async (req, res) => {
-		const photo = req.file.filename;
+		const photo = req.file;
 		const id = req.params.id;
 		const PORT = process.env.PORT || 5000;
 		const HOST = process.env.PGHOST || 'localhost';
@@ -109,7 +110,7 @@ const productController = {
 			rows: [seller],
 		} = await sellerModel.findEmail(email);
 
-		const { id_categories, name, price, size, color, stock, description, rating, review } = req.body;
+		const { id_categories, name, price, size, color, stock, description } = req.body;
 
 		const data = {
 			id,
@@ -121,8 +122,8 @@ const productController = {
 			color,
 			stock,
 			description,
-			rating,
-			review,
+			rating: 0,
+			review: "",
 			photo: `http://${HOST}:${PORT}/img/${photo}`,
 		};
 
@@ -138,9 +139,9 @@ const productController = {
 
 	deleteProduct: async (req, res) => {
 		const id = req.params.id;
-		const role = req.payload.role;
+		// const role = req.payload.role;
 
-		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
+		// if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
 
 		const { rowCount } = await productModel.findId(id);
 		if (!rowCount) return res.json({ message: 'Data Product Not Found' });

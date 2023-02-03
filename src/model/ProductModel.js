@@ -54,6 +54,8 @@ const updateProduct = (data) => {
         photo
     } = data
 
+    console.log(data);
+
     return Pool.query(`UPDATE product SET id_seller = '${id_seller}', id_categories = '${id_categories}', name = '${name}', price = ${price} , size = '${size}', color = '${color}', stock = ${stock}, description = '${description}', rating = ${rating}, review = '${review}', photo = '${photo}' WHERE id_product = '${id}'`)
 }
 
