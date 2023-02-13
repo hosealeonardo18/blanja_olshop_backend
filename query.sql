@@ -166,6 +166,14 @@ DELETE FROM product WHERE id_produk = 1;
 
 
 
+ALTER TABLE seller
+ALTER COLUMN date_of_birthday DROP NOT NULL,
+ALTER COLUMN date_of_birthday DROP DEFAULT,
+
+
+
+
+
 -- table product --
 -------------------------------
 -- id_product

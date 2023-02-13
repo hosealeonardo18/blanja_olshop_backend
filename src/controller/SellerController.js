@@ -59,7 +59,8 @@ const sellerController = {
 			gender,
 			date_of_birthday,
 			email,
-			password
+			password,
+			store_name
 		} = req.body;
 
 		const { rowCount } = await sellerModel.findId(id);
@@ -77,7 +78,8 @@ const sellerController = {
 			date_of_birthday,
 			email,
 			password: passHash,
-			role: 'seller'
+			role: 'seller',
+			store_name,
 		};
 
 		sellerModel.updateSeller(data).then(result => {
@@ -110,7 +112,8 @@ const sellerController = {
 			date_of_birthday,
 			email,
 			password,
-		} = req.body;
+			store_name
+		} = await req.body;
 
 		const { rowCount } = await sellerModel.findEmail(email);
 
@@ -118,6 +121,7 @@ const sellerController = {
 
 		const salt = bcrypt.genSaltSync(10);
 		const passHash = bcrypt.hashSync(password, salt);
+
 		const id = uuidv4();
 
 		const data = {
@@ -128,7 +132,8 @@ const sellerController = {
 			date_of_birthday,
 			email,
 			password: passHash,
-			role: 'seller'
+			role: 'seller',
+			store_name
 		}
 
 		sellerModel.createSeller(data).then(result => {

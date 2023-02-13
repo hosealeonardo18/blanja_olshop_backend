@@ -93,7 +93,7 @@ const productController = {
 	},
 
 	updateProduct: async (req, res) => {
-		const photo = req.file;
+		const photo = req.file.filename;
 		const id = req.params.id;
 		const PORT = process.env.PORT || 5000;
 		const HOST = process.env.PGHOST || 'localhost';

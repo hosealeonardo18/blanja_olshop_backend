@@ -138,13 +138,13 @@ const customerController = {
 
 	loginCustomer: async (req, res) => {
 		try {
-			const { email, password } = req.body;
-			const { rows: [categories] } = await customerModel.findEmail(email);
+			const { emailCust, passwordCust } = req.body;
+			const { rows: [categories] } = await customerModel.findEmail(emailCust);
 
 			if (!categories) return res.json({ message: "Email Not Register!" });
 
 
-			const validatePassword = bcrypt.compareSync(password, categories.password);
+			const validatePassword = bcrypt.compareSync(passwordCust, categories.password);
 			if (!validatePassword) return res.json({ message: "Password Incorect" });
 
 
