@@ -154,7 +154,6 @@ const sellerController = {
 			const validatePassword = bcrypt.compareSync(password, seller.password);
 			if (!validatePassword) return res.status(403).json({ message: "Password Incorrect!" });
 
-
 			delete seller.password;
 			delete seller.address;
 			delete seller.gender;
