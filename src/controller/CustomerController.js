@@ -138,15 +138,13 @@ const customerController = {
 
 	loginCustomer: async (req, res) => {
 		try {
-			const { emailCust, passwordCust } = req.body;
-			const { rows: [categories] } = await customerModel.findEmail(emailCust);
+			const { email, password } = req.body;
+			const { rows: [categories] } = await customerModel.findEmail(email);
 
 			if (!categories) return res.json({ message: "Email Not Register!" });
 
-
-			const validatePassword = bcrypt.compareSync(passwordCust, categories.password);
+			const validatePassword = bcrypt.compareSync(password, categories.password);
 			if (!validatePassword) return res.json({ message: "Password Incorect" });
-
 
 			delete categories.password;
 			delete categories.address;
@@ -163,7 +161,6 @@ const customerController = {
 			categories.refreshToken = authHelper.generateRefreshToken(payload)
 
 			helperResponse.response(res, categories, 201, "Login Successfull")
-
 		} catch (error) {
 			console.log(error);
 		}
