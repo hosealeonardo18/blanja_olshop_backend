@@ -115,7 +115,7 @@ const productController = {
 		const { rows: [cekUser] } = await productModel.getDetailProduct(id)
 
 		// split Url image
-		const nameImage = cekUser?.photo.split("/")[7].split(".")[0];
+		const nameImage = cekUser?.photo.split("/")[7]?.split(".")[0];
 
 		const { id_categories, name, price, size, color, stock, description } = req.body;
 
@@ -133,6 +133,7 @@ const productController = {
 			review: "",
 		};
 
+
 		if (req.file) {
 			await deletePhotoCloudinary(nameImage)
 			const upload = await uploadPhotoCloudinary(req.file.path)
@@ -141,13 +142,12 @@ const productController = {
 			data.photo = cekUser.photo;
 		}
 
-		productModel
+		return productModel
 			.updateProduct(data)
 			.then((result) => {
 				helperResponse.response(res, result.rows, 201, 'Data Product Updated!');
 			})
 			.catch((error) => {
-				console.log(error);
 				res.send(error);
 			});
 	},
@@ -164,7 +164,7 @@ const productController = {
 		const { rows: [cekUser] } = await productModel.getDetailProduct(id)
 
 		if (cekUser.photo.length > 0) {
-			const nameImage = cekUser?.photo.split("/")[7].split(".")[0];
+			const nameImage = cekUser?.photo.split("/")[7]?.split(".")[0];
 			await deletePhotoCloudinary(nameImage)
 		}
 
