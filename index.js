@@ -14,8 +14,9 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }))
+
 app.use(cors({
-    origin: 'https://blanja-olshop.vercel.app/',
+    origin: 'https://blanja-olshop.vercel.app',
     methods: "GET, PUT, POST, DELETE",
     credentials: true
 }))
