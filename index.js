@@ -11,23 +11,14 @@ const mainRouter = require('./src/routes/IndexRouter')
 
 // body parse express 
 app.use(express.json());
+
 app.use(express.urlencoded({
     extended: true
 }))
 
-app.use(cors({
-    origin: 'https://blanja-olshop.vercel.app',
-    methods: "GET, PUT, POST, DELETE",
-    credentials: true
-}))
-
+app.use(cors())
 app.use(morgan('dev'));
 
-
-// router utama
-// app.post('/product/', (req, res) => {
-//     console.log(req);
-// })
 app.use('/', mainRouter);
 
 app.use(helmet());
