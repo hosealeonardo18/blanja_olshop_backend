@@ -35,9 +35,6 @@ app.all('*', (req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://blanja-olshop.vercel.app/');
-
-
     const messageError = err.message || "internal server error"
     const statusCode = err.status || 500
 
