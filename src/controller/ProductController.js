@@ -2,6 +2,7 @@ const productModel = require('../model/ProductModel');
 const sellerModel = require('../model/SellerModel');
 const helperResponse = require('../helper/common');
 const { v4: uuidv4 } = require('uuid');
+const { uploadPhotoCloudinary, deletePhotoCloudinary } = require('../../cloudinary')
 
 const productController = {
 	getAllProduct: async (req, res) => {
@@ -46,7 +47,7 @@ const productController = {
 	},
 
 	createProduct: async (req, res) => {
-		const photo = req.file.filename;
+		// const photo = req.file.filename;
 		const PORT = process.env.PORT || 4000;
 		const HOST = process.env.PGHOST || 'localhost';
 
@@ -69,6 +70,8 @@ const productController = {
 
 		const id = uuidv4();
 
+		const upload = await uploadPhotoCloudinary(req.file.path)
+
 		const data = {
 			id,
 			id_seller: seller.id_seller,
@@ -81,7 +84,8 @@ const productController = {
 			description,
 			rating: 0,
 			review: "",
-			photo: `http://${HOST}:${PORT}/img/${photo}`
+			photo: upload.secure_url || url
+			// photo: `http://${HOST}:${PORT}/img/${photo}`
 		};
 
 		productModel.createProduct(data).then((result) => {
@@ -93,7 +97,7 @@ const productController = {
 	},
 
 	updateProduct: async (req, res) => {
-		const photo = req.file.filename;
+		// const photo = req.file.filename;
 		const id = req.params.id;
 		const PORT = process.env.PORT || 5000;
 		const HOST = process.env.PGHOST || 'localhost';
@@ -110,6 +114,11 @@ const productController = {
 			rows: [seller],
 		} = await sellerModel.findEmail(email);
 
+		const { rows: [cekUser] } = await productModel.getDetailProduct(id)
+
+		// split Url image
+		const nameImage = cekUser?.photo.split("/")[7].split(".")[0];
+
 		const { id_categories, name, price, size, color, stock, description } = req.body;
 
 		const data = {
@@ -124,8 +133,15 @@ const productController = {
 			description,
 			rating: 0,
 			review: "",
-			photo: `http://${HOST}:${PORT}/img/${photo}`,
 		};
+
+		if (req.file) {
+			await deletePhotoCloudinary(nameImage)
+			const upload = await uploadPhotoCloudinary(req.file.path)
+			data.photo = upload.secure_url || url
+		} else {
+			data.photo = cekUser.photo;
+		}
 
 		productModel
 			.updateProduct(data)
@@ -146,6 +162,12 @@ const productController = {
 		const { rowCount } = await productModel.findId(id);
 		if (!rowCount) return res.json({ message: 'Data Product Not Found' });
 
+		const { rows: [cekUser] } = await productModel.getDetailProduct(id)
+
+		if (cekUser.photo.length > 0) {
+			const nameImage = cekUser?.photo.split("/")[7].split(".")[0];
+			await deletePhotoCloudinary(nameImage)
+		}
 
 		productModel.deleteProduct(id).then((result) => {
 			helperResponse.response(res, result.rows, 200, 'Product Deleted!');
