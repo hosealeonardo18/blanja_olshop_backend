@@ -35,7 +35,7 @@ app.all('*', (req, res, next) => {
 })
 
 app.use((err, req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://blanja-olshop.vercel.app');
+    res.header('Access-Control-Allow-Origin', 'https://blanja-olshop.vercel.app/');
     res.header('Access-Control-Allow-Methods', 'POST,GET,PUT, DELETE, LINK');
     res.setHeader('Access-Control-Allow-Credentials', true);
 
