@@ -99,8 +99,6 @@ const productController = {
 	updateProduct: async (req, res) => {
 		// const photo = req.file.filename;
 		const id = req.params.id;
-		const PORT = process.env.PORT || 5000;
-		const HOST = process.env.PGHOST || 'localhost';
 
 		const role = req.payload.role;
 
@@ -149,6 +147,7 @@ const productController = {
 				helperResponse.response(res, result.rows, 201, 'Data Product Updated!');
 			})
 			.catch((error) => {
+				console.log(error);
 				res.send(error);
 			});
 	},
