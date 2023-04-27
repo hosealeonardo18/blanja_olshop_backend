@@ -1,3 +1,22 @@
+<br />
+<p align="center">
+<div align="center">
+  <img height="150" <img src="https://res.cloudinary.com/dklpoff31/image/upload/v1681702726/Group_1158_peagwb.png" alt="logo" border="0"/>
+</div>
+  <h3 align="center">Blanja Olshop</h3>
+  <p align="center">
+    <a href="https://github.com/hosealeonardo18/blanja-olshop-react"><strong>Explore the docs »</strong></a>
+    <br />
+    <a href="https://blanja-olshop.vercel.app/home">View Demo</a>
+  </p>
+</p>
+
+<!-- ABOUT THE PROJECT -->
+
+## About The Project
+
+The Blanja e-commerce website project is an online platform designed to make it easier for users to make buying and selling transactions online. This website was developed using React.js and Redux frontend technologies to optimize display performance and efficiency as well as state management. On the backend, this website uses Express.js technology which functions as a server to manage data taken from Cloudinary. Cloudinary functions as an image data store so that it allows users to easily view images of each product being sold.
+
 # Documentation Basic Backend
 
 ## Third Party Module
@@ -47,19 +66,7 @@
 | Deployment                       | Database                                    |
 | :------------------------------- | :------------------------------------------ |
 | [Railway](https://railway.app/)  | [postgreSQL](https://www.postgresql.org/)   |
-| [Cyclic](https://www.cyclic.sh/) | [ElephantSQL](https://www.elephantsql.com/) |
 
-- [API Product](https://blanjaolshopbackend-production.up.railway.app/product)
-- [API Seller](https://blanjaolshopbackend-production.up.railway.app/seller)
-- [API Customer](https://blanjaolshopbackend-production.up.railway.app/customer)
-- [API Categories](https://blanjaolshopbackend-production.up.railway.app/categories)
-
-## Access API Deploy by Cyclic
-
-- [API Product](https://wide-eyed-gilet-wasp.cyclic.app/product)
-- [API Seller](https://wide-eyed-gilet-wasp.cyclic.app/seller)
-- [API Customer](https://wide-eyed-gilet-wasp.cyclic.app/customer)
-- [API Categories](https://wide-eyed-gilet-wasp.cyclic.app/categories)
 
 ## Authors
 
@@ -82,3 +89,33 @@
 ```bash
   npm run lint
 ```
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Endpoint List
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/23292228/2s93RUvsS7)
+
+
+## Related Project
+:rocket: [`Backend Blanja Olshop`](https://github.com/hosealeonardo18/blanja_olshop_backend)
+
+:rocket: [`Frontend Blanja Olshop`](https://github.com/hosealeonardo18/blanja-olshop-react)
+
+:rocket: [`Demo Blanja Olshop`](https://blanja-olshop.vercel.app/)
+
+<!-- CONTACT -->
+## Contact
+
+My Email : hosealeonardo18@gmail.com
+
+Project Link: [https://github.com/hosealeonardo18/blanja_olshop_backend](https://github.com/hosealeonardo18/blanja_olshop_backend)
