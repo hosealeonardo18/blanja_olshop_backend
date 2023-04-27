@@ -18,9 +18,9 @@ app.use(express.urlencoded({
 
 app.use(cors(
     {
-        origin: 'https://blanja-olshop.vercel.app',
+        origin: ['https://blanja-olshop.vercel.app', 'http://localhost:3000'],
         methods: "GET, POST, PUT, DELETE",
-        // credentials: true
+        credentials: true
     }
 ))
 app.use(morgan('dev'));
