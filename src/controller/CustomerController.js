@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const authHelper = require('../helper/AuthHelper');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
+const { uploadPhotoCloudinary, deletePhotoCloudinary } = require('../../cloudinary')
 
 
 const customerController = {
@@ -70,13 +72,29 @@ const customerController = {
 			fullname,
 			address,
 			gender,
-			date_of_birthday,
+			date_of_birthday: moment(date_of_birthday).format('DD-MM-YYYY'),
 			email,
 			password: passHash,
-			role: 'customer'
+			role: 'customer',
 		};
 
-		customerModel.updateCustomer(data).then(result => {
+		const { rows: [cekPhoto] } = await customerModel.getDetailCustomer(id)
+		const nameImage = cekPhoto?.image.split("/")[7]?.split(".")[0];
+
+		if (req.file) {
+			if (cekPhoto?.image) {
+				await deletePhotoCloudinary(nameImage)
+				const upload = await uploadPhotoCloudinary(req.file.path)
+				data.image = upload.secure_url || url
+			} else {
+				const upload = await uploadPhotoCloudinary(req.file.path)
+				data.image = upload.secure_url || url
+			}
+		} else {
+			data.image = cekPhoto.image;
+		}
+
+		return customerModel.updateCustomer(data).then(result => {
 			helperResponse.response(res, result.rows, 201, "Customer Updated!");
 		}).catch(error => {
 			res.send(error);
@@ -89,7 +107,14 @@ const customerController = {
 
 		if (!rowCount) return res.json({ message: "Data Customer Not Found!" })
 
-		customerModel.deleteCustomer(id).then(result => {
+		const { rows: [cekPhoto] } = await customerModel.getDetailCustomer(id)
+		const nameImage = cekPhoto?.image.split("/")[7]?.split(".")[0];
+
+		if (cekPhoto.image) {
+			await deletePhotoCloudinary(nameImage)
+		}
+
+		return customerModel.deleteCustomer(id).then(result => {
 			helperResponse.response(res, result.rows, 200, "Data Customer Deleted!")
 		}).catch(error => {
 			res.send(error)
@@ -119,13 +144,13 @@ const customerController = {
 				fullname,
 				address,
 				gender,
-				date_of_birthday,
+				date_of_birthday: moment(date_of_birthday).format('DD-MM-YYYY'),
 				email,
 				password: passHash,
 				role: 'customer'
 			}
 
-			customerModel.registerCustomer(data).then(result => {
+			return customerModel.registerCustomer(data).then(result => {
 				helperResponse.response(res, result.rows, 201, "Register Customer Success!");
 			}).catch(error => {
 				res.send(error)
@@ -139,28 +164,28 @@ const customerController = {
 	loginCustomer: async (req, res) => {
 		try {
 			const { email, password } = req.body;
-			const { rows: [categories] } = await customerModel.findEmail(email);
+			const { rows: [cekUser] } = await customerModel.findEmail(email);
 
-			if (!categories) return res.json({ message: "Email Not Register!" });
+			if (!cekUser) return res.json({ message: "Email Not Register!" });
 
-			const validatePassword = bcrypt.compareSync(password, categories.password);
+			const validatePassword = bcrypt.compareSync(password, cekUser.password);
 			if (!validatePassword) return res.json({ message: "Password Incorect" });
 
-			delete categories.password;
-			delete categories.address;
-			delete categories.gender;
-			delete categories.date_of_birthday;
-			delete categories.id_customer;
+			delete cekUser.password;
+			delete cekUser.address;
+			delete cekUser.gender;
+			delete cekUser.date_of_birthday;
+			delete cekUser.id_customer;
 
 			let payload = {
-				email: categories.email,
-				role: categories.role
+				email: cekUser.email,
+				role: cekUser.role
 			}
 
-			categories.token = authHelper.generateToken(payload);
-			categories.refreshToken = authHelper.generateRefreshToken(payload)
+			cekUser.token = authHelper.generateToken(payload);
+			cekUser.refreshToken = authHelper.generateRefreshToken(payload)
 
-			helperResponse.response(res, categories, 201, "Login Successfull")
+			return helperResponse.response(res, cekUser, 201, "Login Successfull")
 		} catch (error) {
 			console.log(error);
 		}
@@ -190,11 +215,11 @@ const customerController = {
 	profileCustomer: async (req, res) => {
 		try {
 			const email = req.payload.email
-			const { rows: [categories] } = await customerModel.findEmail(email);
+			const { rows: [cekUser] } = await customerModel.findEmail(email);
 
-			delete categories.password
+			delete cekUser.password
 
-			helperResponse.response(res, categories, 200);
+			return helperResponse.response(res, cekUser, 200, "Get Profile Success!");
 		} catch (error) {
 			console.log(error);
 		}

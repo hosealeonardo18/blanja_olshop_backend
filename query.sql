@@ -9,11 +9,12 @@ CREATE TABLE customer(
     id_customer varchar(255) PRIMARY KEY NOT NULL,
     fullname varchar(255) NOT NULL,
     address text NOT NULL,
-    gender enum NOT NULL,
-    date_of_birthday date NOT NULL,
+    gender enum NULL,
+    date_of_birthday VARCHAR(128) NULL,
     email varchar(255) NOT NULL,
     password varchar(255) NOT NULL,
-    role varchar(255)
+    role varchar(255),
+    image varchar(128)
  );
 
  CREATE TABLE seller(
@@ -21,10 +22,11 @@ CREATE TABLE customer(
     fullname varchar(255) NOT NULL,
     address text NOT NULL,
     gender enum NOT NULL,
-    date_of_birthday date NOT NULL,
+    date_of_birthday VARCHAR(128) NULL,
     email varchar(255) NOT NULL,
     password varchar(255) NOT NULL,
-    role varchar(255)
+    role varchar(255),
+    image varchar(128)
  );
 
  CREATE TABLE product (
@@ -40,6 +42,8 @@ CREATE TABLE customer(
     rating int,
     review text,
     photo varchar(255),
+    created_at varchar(255),
+    updated_at varchar(255),
 
     CONSTRAINT fk_categories
     FOREIGN KEY (id_categories) 
@@ -51,32 +55,32 @@ CREATE TABLE customer(
  );
 
 
---  CREATE TABLE cart (
---     id_cart int PRIMARY KEY,
---     qty int,
---     totalPrice int,
---     create_date date,
---     id_product int,
---     id_seller int,
+ CREATE TABLE cart (
+    id_cart varchar(255) PRIMARY KEY,
+    qty int,
+    totalPrice int,
+    created_at varchar(255),
+    id_product varchar(255),
+    id_seller varchar(255),
 
---     CONSTRAINT  fk_id_seller
---     FOREIGN KEY (id_seller)
---     REFERENCES  seller(id_seller) ON DELETE CASCADE,
+    CONSTRAINT  fk_id_seller
+    FOREIGN KEY (id_seller)
+    REFERENCES  seller(id_seller) ON DELETE CASCADE,
 
---     CONSTRAINT  fk_id_product
---     FOREIGN KEY (id_product)
---     REFERENCES  product(id_product) ON DELETE CASCADE
---  );
+    CONSTRAINT  fk_id_product
+    FOREIGN KEY (id_product)
+    REFERENCES  product(id_product) ON DELETE CASCADE
+ );
 
  CREATE TABLE bank (
-    id_bank int PRIMARY KEY,
+    id_bank varchar(255) PRIMARY KEY,
     bank_name varchar(255)
  );
 
  CREATE TABLE transaksi (
-   id_transaksi int PRIMARY KEY,
-   id_cart int,
-   id_bank int,
+   id_transaksi varchar(255) PRIMARY KEY,
+   id_cart varchar(255),
+   id_bank varchar(255),
 
    CONSTRAINT  fk_cart
    FOREIGN KEY (id_cart)
@@ -86,14 +90,6 @@ CREATE TABLE customer(
    FOREIGN KEY (id_bank)
    REFERENCES  bank(id_bank) ON DELETE CASCADE
  );
-
- CREATE TABLE users(
-   id varchar(255) PRIMARY KEY NOT NULL,
-   email varchar(255) NOT NULL,
-   password varchar(255) NOT NULL,
-   fullname varchar(255) NOT NULL,
-   role varchar(255) NOT NULL
- )
 
 -- Join table
  SELECT product.*, seller.fullname AS seller_fullname, categories.fullname AS categories_fullname  
@@ -162,16 +158,6 @@ DELETE FROM categories WHERE id_categories = 1;
 DELETE FROM customer WHERE id_categories = 1;
 DELETE FROM seller WHERE id_seller = 1;
 DELETE FROM product WHERE id_produk = 1;
-
-
-
-
-ALTER TABLE seller
-ALTER COLUMN date_of_birthday DROP NOT NULL,
-ALTER COLUMN date_of_birthday DROP DEFAULT,
-
-
-
 
 
 -- table product --

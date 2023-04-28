@@ -99,9 +99,7 @@ const productController = {
 	updateProduct: async (req, res) => {
 		// const photo = req.file.filename;
 		const id = req.params.id;
-
 		const role = req.payload.role;
-
 		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
 
 		const { rowCount } = await productModel.findId(id);
