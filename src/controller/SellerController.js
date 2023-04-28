@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const authHelper = require('../helper/AuthHelper');
 const jwt = require('jsonwebtoken');
-
+const moment = require('moment');
+const { uploadPhotoCloudinary, deletePhotoCloudinary } = require('../../cloudinary')
 
 const sellerController = {
 	// get Seller
@@ -14,12 +15,15 @@ const sellerController = {
 			const limit = Number(req.query.limit) || 5;
 			const offset = (page - 1) * limit;
 			let searchParams = req.query.search || "";
-			let sortBy = req.query.sortBy || "name";
+			let sortBy = req.query.sortBy || "fullname";
 			let sort = req.query.sort || 'ASC';
 
 			const result = await sellerModel.getAllSeller(searchParams, sortBy, sort, limit, offset);
 
 			const { rows: [count] } = await sellerModel.countData();
+
+			const { rows: [cekUser] } = result
+			delete cekUser.password;
 
 			const totalData = parseInt(count.count);
 			const totalPage = Math.ceil(totalData / limit)
@@ -30,7 +34,7 @@ const sellerController = {
 				totalPage: totalPage
 			}
 
-			helperResonse.response(res, result.rows, 200, "Get Data Seller Success!", pagination);
+			return helperResonse.response(res, result.rows, 200, "Get Data Seller Success!", pagination);
 		} catch (error) {
 			console.log(error);
 		}
@@ -40,11 +44,13 @@ const sellerController = {
 	getDetailSeller: async (req, res) => {
 		const id = req.params.id;
 		const { rowCount } = await sellerModel.findId(id);
-
 		if (!rowCount) return res.json({ message: "Data Seller Not Found!" })
 
-		sellerModel.getDetailSeller(id).then(result => {
-			helperResonse.response(res, result.rows, 200, "Get Data Success!")
+		const { rows: [cekUser] } = await sellerModel.getDetailSeller(id)
+		delete cekUser.password
+
+		return sellerModel.getDetailSeller(id).then(result => {
+			helperResonse.response(res, cekUser, 200, "Get Data Success!")
 		}).catch(error => {
 			res.send(error)
 		})
@@ -56,6 +62,7 @@ const sellerController = {
 		const {
 			fullname,
 			address,
+			phone_number,
 			gender,
 			date_of_birthday,
 			email,
@@ -70,19 +77,37 @@ const sellerController = {
 		const salt = bcrypt.genSaltSync(10);
 		const passHash = bcrypt.hashSync(password, salt);
 
+		const { rows: [cekPhoto] } = await sellerModel.getDetailSeller(id)
+		const nameImage = cekPhoto?.image.split("/")[7]?.split(".")[0];
+
 		const data = {
 			id,
 			fullname,
 			address,
+			phone_number: !phone_number ? cekPhoto.phone_number : phone_number,
 			gender,
-			date_of_birthday,
-			email,
-			password: passHash,
+			date_of_birthday: moment(date_of_birthday).format('DD-MM-YYYY'),
+			email: !email ? cekPhoto.email : email,
+			password: !password ? cekPhoto.password : passHash,
 			role: 'seller',
-			store_name,
+			store_name: !store_name ? cekPhoto.store_name : store_name
 		};
 
-		sellerModel.updateSeller(data).then(result => {
+
+		if (req.file) {
+			if (cekPhoto?.image) {
+				await deletePhotoCloudinary(nameImage)
+				const upload = await uploadPhotoCloudinary(req.file.path)
+				data.image = upload.secure_url || url
+			} else {
+				const upload = await uploadPhotoCloudinary(req.file.path)
+				data.image = upload.secure_url || url
+			}
+		} else {
+			data.image = cekPhoto.image;
+		}
+
+		return sellerModel.updateSeller(data).then(result => {
 			helperResonse.response(res, result.rows, 201, "Data Seller Updated!");
 		}).catch(error => {
 			res.send(error);
@@ -92,13 +117,21 @@ const sellerController = {
 	// delete data seller
 	deleteSeller: async (req, res) => {
 		const id = req.params.id;
-		const { rowCount } = await sellerModel.findId(id);
 
+		const { rowCount } = await sellerModel.findId(id);
 		if (!rowCount) return res.json({ message: "Data Seller Not Found" });
 
-		sellerModel.deleteSeller(id).then(result => {
+		const { rows: [cekPhoto] } = await sellerModel.getDetailSeller(id)
+		const nameImage = cekPhoto?.image.split("/")[7]?.split(".")[0];
+
+		if (cekPhoto.image) {
+			await deletePhotoCloudinary(nameImage)
+		}
+
+		return sellerModel.deleteSeller(id).then(result => {
 			helperResonse.response(res, result.rows, 201, "Data Seller Deteled!");
 		}).catch(error => {
+			console.log(error);
 			res.send(error)
 		})
 	},
@@ -107,12 +140,11 @@ const sellerController = {
 	registerSeller: async (req, res) => {
 		const {
 			fullname,
-			address,
-			gender,
-			date_of_birthday,
 			email,
-			password,
-			store_name
+			phone_number,
+			gender,
+			store_name,
+			password
 		} = await req.body;
 
 		const { rowCount } = await sellerModel.findEmail(email);
@@ -127,18 +159,18 @@ const sellerController = {
 		const data = {
 			id,
 			fullname,
-			address,
-			gender,
-			date_of_birthday,
 			email,
+			phone_number,
+			gender,
 			password: passHash,
 			role: 'seller',
 			store_name
 		}
 
-		sellerModel.createSeller(data).then(result => {
+		return sellerModel.createSeller(data).then(result => {
 			helperResonse.response(res, result.rows, 201, "Data Seller Created")
 		}).catch(error => {
+			console.log(error);
 			res.send(error)
 		})
 	},

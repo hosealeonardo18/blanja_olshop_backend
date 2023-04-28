@@ -4,11 +4,12 @@ const sellerController = require('../controller/SellerController');
 const {
   protect
 } = require('../middleware/AuthMiddleware');
+const upload = require('../middleware/MulterMiddleware');
 
 // getData
 router.get('/', sellerController.getAllSeller);
 router.get('/:id', sellerController.getDetailSeller);
-router.put('/:id', sellerController.updateSeller);
+router.put('/:id', protect, upload, sellerController.updateSeller);
 router.delete('/:id', sellerController.deleteSeller);
 
 // auth

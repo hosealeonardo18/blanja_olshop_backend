@@ -12,17 +12,16 @@ const createSeller = (data) => {
     const {
         id,
         fullname,
-        address,
-        gender,
-        date_of_birthday,
         email,
+        gender,
+        phone_number,
         password,
         role,
         store_name
     } = data;
 
-    return Pool.query(`INSERT INTO seller(id_seller, fullname , address, gender, date_of_birthday , email, password, role, store_name)
-    VALUES ('${id}', '${fullname}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}', '${role}', '${store_name}')`)
+    return Pool.query(`INSERT INTO seller(id_seller, fullname , address, phone_number, gender, date_of_birthday , email, password, role, image, store_name)
+    VALUES ('${id}', '${fullname}', '', '${phone_number}','${gender}', '', '${email}', '${password}', '${role}', '', '${store_name}')`)
 }
 
 const updateSeller = (data) => {
@@ -30,15 +29,17 @@ const updateSeller = (data) => {
         id,
         fullname,
         address,
+        phone_number,
         gender,
         date_of_birthday,
         email,
         password,
         role,
+        image,
         store_name
     } = data
 
-    return Pool.query(`UPDATE seller SET fullname='${fullname}', address='${address}', gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}', role='${role}', store_name='${store_name}' WHERE id_seller='${id}'`)
+    return Pool.query(`UPDATE seller SET fullname='${fullname}', address='${address}', phone_number='${phone_number}',gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}', role='${role}', image='${image}', store_name='${store_name}' WHERE id_seller='${id}'`)
 }
 
 const deleteSeller = (id) => {

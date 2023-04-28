@@ -41,13 +41,18 @@ const customerController = {
 
 	getDetailCustomer: async (req, res) => {
 		const id = req.params.id;
-		const { rowCount } = await customerModel.getDetailCustomer(id);
+		const result = await customerModel.getDetailCustomer(id);
 
+		const { rowCount } = result
 		if (!rowCount) return res.json({ message: 'Data Customer Not Found!' });
 
-		customerModel.getDetailCustomer(id).then(result => {
-			helperResponse.response(res, result.rows, 200, 'Get Data Success!');
+		const { rows: [cekUser] } = result
+		delete cekUser.password
+
+		return customerModel.getDetailCustomer(id).then(result => {
+			helperResponse.response(res, result.rows[0], 200, 'Get Data Success!');
 		}).catch(error => {
+			console.log(error);
 			res.send(error);
 		})
 	},
