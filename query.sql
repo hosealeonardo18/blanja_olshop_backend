@@ -8,11 +8,12 @@ CREATE TABLE categories (
 CREATE TABLE customer(
     id_customer varchar(255) PRIMARY KEY NOT NULL,
     fullname varchar(255) NOT NULL,
-    address text NOT NULL,
+    address text,
+    phone_number varchar(14),
     gender enum NULL,
-    date_of_birthday VARCHAR(128) NULL,
+    date_of_birthday VARCHAR(128),
     email varchar(255) NOT NULL,
-    password varchar(255) NOT NULL,
+    password varchar(255) NOT NULL, 
     role varchar(255),
     image varchar(128)
  );
@@ -20,13 +21,15 @@ CREATE TABLE customer(
  CREATE TABLE seller(
     id_seller varchar(255) PRIMARY KEY NOT NULL,
     fullname varchar(255) NOT NULL,
-    address text NOT NULL,
-    gender enum NOT NULL,
-    date_of_birthday VARCHAR(128) NULL,
+    address text,
+    phone_number varchar(14),
+    gender enum NULL,
+    date_of_birthday VARCHAR(128),
     email varchar(255) NOT NULL,
     password varchar(255) NOT NULL,
     role varchar(255),
-    image varchar(128)
+    image varchar(128),
+    store_name varchar(255)
  );
 
  CREATE TABLE product (
@@ -158,6 +161,12 @@ DELETE FROM categories WHERE id_categories = 1;
 DELETE FROM customer WHERE id_categories = 1;
 DELETE FROM seller WHERE id_seller = 1;
 DELETE FROM product WHERE id_produk = 1;
+
+ALTER TABLE seller
+ADD  store_name varchar(255);
+
+ALTER TABLE customer
+ALTER COLUMN address VARCHAR(255);
 
 
 -- table product --

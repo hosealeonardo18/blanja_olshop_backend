@@ -10,19 +10,9 @@ const getDetailCustomer = (id) => {
 }
 
 const updateCustomer = (data) => {
-    const {
-        id,
-        fullname,
-        address,
-        gender,
-        date_of_birthday,
-        email,
-        password,
-        role,
-        image
-    } = data;
+    const { id, fullname, address, phone_number, gender, date_of_birthday, email, password, role, image } = data;
 
-    return Pool.query(`UPDATE customer SET fullname='${fullname}', address='${address}', gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}', role='${role}', image='${image}' WHERE id_customer='${id}';`)
+    return Pool.query(`UPDATE customer SET fullname='${fullname}', address='${address}', phone_number='${phone_number}', gender='${gender}', date_of_birthday='${date_of_birthday}', email='${email}', password='${password}', role='${role}', image='${image}' WHERE id_customer='${id}';`)
 }
 
 const deleteCustomer = (id) => {
@@ -47,10 +37,10 @@ const countData = () => {
 
 // auth
 const registerCustomer = (data) => {
-    const { id, fullname, address, gender, date_of_birthday, email, password, role } = data
+    const { id, fullname, gender, email, password, role } = data
 
-    return Pool.query(`INSERT INTO customer(id_customer, fullname , address, gender, date_of_birthday , email, password, role, image)
-    VALUES ('${id}','${fullname}', '${address}', '${gender}', '${date_of_birthday}', '${email}', '${password}', '${role}', '')`);
+    return Pool.query(`INSERT INTO customer(id_customer, fullname , address, phone_number, gender, date_of_birthday , email, password, role, image)
+    VALUES ('${id}','${fullname}', '', '', '${gender}', '', '${email}', '${password}', '${role}', '')`);
 }
 
 const findEmail = (email) => {

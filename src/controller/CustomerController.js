@@ -21,6 +21,9 @@ const customerController = {
 			const result = await customerModel.getAllCustomer(searchParams, sortBy, sort, limit, offset)
 			const { rows: [count] } = await customerModel.countData();
 
+			const { rows: [cekUser] } = result
+			delete cekUser.password;
+
 			const totalData = parseInt(count.count);
 			const totalPage = Math.ceil(totalData / limit);
 			const pagination = {
@@ -30,7 +33,7 @@ const customerController = {
 				totalPage: totalPage
 			}
 
-			helperResponse.response(res, result.rows, 200, "Get Data Customer Success!", pagination);
+			return helperResponse.response(res, result.rows, 200, "Get Data Customer Success!", pagination);
 		} catch (error) {
 			console.log(error);
 		}
@@ -54,6 +57,7 @@ const customerController = {
 		const {
 			fullname,
 			address,
+			phone_number,
 			gender,
 			date_of_birthday,
 			email,
@@ -71,6 +75,7 @@ const customerController = {
 			id,
 			fullname,
 			address,
+			phone_number,
 			gender,
 			date_of_birthday: moment(date_of_birthday).format('DD-MM-YYYY'),
 			email,
@@ -125,9 +130,7 @@ const customerController = {
 		try {
 			const {
 				fullname,
-				address,
 				gender,
-				date_of_birthday,
 				email,
 				password,
 			} = req.body
@@ -142,9 +145,7 @@ const customerController = {
 			const data = {
 				id,
 				fullname,
-				address,
 				gender,
-				date_of_birthday: moment(date_of_birthday).format('DD-MM-YYYY'),
 				email,
 				password: passHash,
 				role: 'customer'
