@@ -3,6 +3,7 @@ const sellerModel = require('../model/SellerModel');
 const helperResponse = require('../helper/common');
 const { v4: uuidv4 } = require('uuid');
 const { uploadPhotoCloudinary, deletePhotoCloudinary } = require('../../cloudinary')
+const moment = require('moment');
 
 const productController = {
 	getAllProduct: async (req, res) => {
@@ -47,10 +48,6 @@ const productController = {
 	},
 
 	createProduct: async (req, res) => {
-		// const photo = req.file.filename;
-		const PORT = process.env.PORT || 4000;
-		const HOST = process.env.PGHOST || 'localhost';
-
 		const role = req.payload.role;
 
 		if (role !== 'seller') return res.status(401).json({ message: 'Sorry, you are not a seller!' });
@@ -84,11 +81,11 @@ const productController = {
 			description,
 			rating: 0,
 			review: "",
-			photo: upload.secure_url || url
-			// photo: `http://${HOST}:${PORT}/img/${photo}`
+			photo: upload.secure_url || url,
+			created_at: moment(Date.now()).format('DD-MM-YYYY')
 		};
 
-		productModel.createProduct(data).then((result) => {
+		return productModel.createProduct(data).then((result) => {
 			helperResponse.response(res, result.rows, 201, 'Data Product Created!');
 		}).catch((error) => {
 			console.log(error);
@@ -97,7 +94,6 @@ const productController = {
 	},
 
 	updateProduct: async (req, res) => {
-		// const photo = req.file.filename;
 		const id = req.params.id;
 		const role = req.payload.role;
 		if (role !== 'seller') return res.json({ message: 'Sorry, you are not a seller!' });
@@ -129,8 +125,8 @@ const productController = {
 			description,
 			rating: 0,
 			review: "",
+			updated_at: moment(Date.now()).format('DD-MM-YYYY')
 		};
-
 
 		if (req.file) {
 			await deletePhotoCloudinary(nameImage)
@@ -140,12 +136,11 @@ const productController = {
 			data.photo = cekUser.photo;
 		}
 
-		return productModel
-			.updateProduct(data)
-			.then((result) => {
-				helperResponse.response(res, result.rows, 201, 'Data Product Updated!');
-			})
+		return productModel.updateProduct(data).then((result) => {
+			helperResponse.response(res, result.rows, 201, 'Data Product Updated!');
+		})
 			.catch((error) => {
+				console.log(error);
 				res.send(error);
 			});
 	},

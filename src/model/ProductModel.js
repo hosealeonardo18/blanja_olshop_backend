@@ -19,23 +19,10 @@ const getDetailProduct = (id) => {
 }
 
 const createProduct = (data) => {
-    const {
-        id,
-        id_seller,
-        id_categories,
-        name,
-        price,
-        size,
-        color,
-        stock,
-        description,
-        rating,
-        review,
-        photo
-    } = data;
+    const { id, id_seller, id_categories, name, price, size, color, stock, description, rating, review, photo, created_at } = data;
 
-    return Pool.query(`INSERT INTO product(id_product, id_seller, id_categories, name, price , size, color, stock, description,rating, review, photo)
-    VALUES ('${id}','${id_seller}', '${id_categories}', '${name}', ${price}, '${size}', '${color}', ${stock}, '${description}', ${rating}, '${review}', '${photo}')`)
+    return Pool.query(`INSERT INTO product(id_product, id_seller, id_categories, name, price , size, color, stock, description,rating, review, photo, created_at, updated_at)
+    VALUES ('${id}','${id_seller}', '${id_categories}', '${name}', ${price}, '${size}', '${color}', ${stock}, '${description}', ${rating}, '${review}', '${photo}', '${created_at}', '')`)
 }
 
 const updateProduct = (data) => {
@@ -51,11 +38,12 @@ const updateProduct = (data) => {
         description,
         rating,
         review,
-        photo
+        photo,
+        updated_at
     } = data
 
 
-    return Pool.query(`UPDATE product SET id_seller = '${id_seller}', id_categories = '${id_categories}', name = '${name}', price = ${price} , size = '${size}', color = '${color}', stock = ${stock}, description = '${description}', rating = ${rating}, review = '${review}', photo = '${photo}' WHERE id_product = '${id}'`)
+    return Pool.query(`UPDATE product SET id_seller = '${id_seller}', id_categories = '${id_categories}', name = '${name}', price = ${price} , size = '${size}', color = '${color}', stock = ${stock}, description = '${description}', rating = ${rating}, review = '${review}', photo = '${photo}', updated_at = '${updated_at}' WHERE id_product = '${id}'`)
 }
 
 const deleteProduct = (id) => {
