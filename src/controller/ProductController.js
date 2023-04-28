@@ -111,7 +111,7 @@ const productController = {
 		// split Url image
 		const nameImage = cekUser?.photo.split("/")[7]?.split(".")[0];
 
-		const { id_categories, name, price, size, color, stock, description } = req.body;
+		const { id_categories, name, price, size, color, stock, description, rating, review } = req.body;
 
 		const data = {
 			id,
@@ -123,8 +123,8 @@ const productController = {
 			color,
 			stock,
 			description,
-			rating: 0,
-			review: "",
+			rating: !rating ? 0 : rating,
+			review: !review ? "" : review,
 			updated_at: moment(Date.now()).format('DD-MM-YYYY')
 		};
 
